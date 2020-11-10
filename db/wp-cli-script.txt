@@ -1,0 +1,1 @@
+wp db export ./wp-content/plugins/excellent-exam-core/db/backup-`date '+%d-%m-%Y-%H-%M-%S'`.sql
