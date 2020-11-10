@@ -152,7 +152,10 @@ class Excellent_Exam_Core
 
         $plugin_hooks = new Excellent_Exam_Core_Hooks($this->get_plugin_name(), $this->get_version());
 
-        $this->loader->add_action('wp_head', $plugin_hooks, 'test');
+        $this->loader->add_action('init', $plugin_hooks, 'registerCustomPostTypes');
+        $this->loader->add_action('init', $plugin_hooks, 'registerCustomTaxonomies');
+        $this->loader->add_action('init', $plugin_hooks, 'registerCustomMeta');
+
 
     }
 
