@@ -354,7 +354,10 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$metroTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'metro', [ EXCELLENT_EXAM_CORE_PREFIX . 'profile', EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ], $metroArgs );
+		$metroTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'metro', [
+			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		], $metroArgs );
 
 		if ( is_wp_error( $metroTaxonomy ) ) {
 			$errors['metro'] = 'Не удалось зарегистрировать metro taxonomy';
@@ -404,7 +407,10 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$cityTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'city', [ EXCELLENT_EXAM_CORE_PREFIX . 'profile', EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ], $cityArgs );
+		$cityTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'city', [
+			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		], $cityArgs );
 
 		if ( is_wp_error( $cityTaxonomy ) ) {
 			$errors['city'] = 'Не удалось зарегистрировать city taxonomy';
@@ -454,7 +460,10 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$subjectTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'subject', [ EXCELLENT_EXAM_CORE_PREFIX . 'profile', EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ], $subjectArgs );
+		$subjectTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'subject', [
+			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		], $subjectArgs );
 
 		if ( is_wp_error( $subjectTaxonomy ) ) {
 			$errors['subject'] = 'Не удалось зарегистрировать subject taxonomy';
@@ -504,7 +513,10 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$studentTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'student', [ EXCELLENT_EXAM_CORE_PREFIX . 'profile', EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ], $studentArgs );
+		$studentTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'student', [
+			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		], $studentArgs );
 
 		if ( is_wp_error( $studentTaxonomy ) ) {
 			$errors['student'] = 'Не удалось зарегистрировать student taxonomy';
@@ -554,7 +566,10 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$placeTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'place', [ EXCELLENT_EXAM_CORE_PREFIX . 'profile', EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ], $placeArgs );
+		$placeTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'place', [
+			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		], $placeArgs );
 
 		if ( is_wp_error( $placeTaxonomy ) ) {
 			$errors['place'] = 'Не удалось зарегистрировать place taxonomy';
@@ -604,7 +619,10 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$genderTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'gender', [ EXCELLENT_EXAM_CORE_PREFIX . 'profile', EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ], $genderArgs );
+		$genderTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'gender', [
+			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		], $genderArgs );
 
 		if ( is_wp_error( $genderTaxonomy ) ) {
 			$errors['gender'] = 'Не удалось зарегистрировать gender taxonomy';
@@ -654,57 +672,10 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$statusTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'status', [ EXCELLENT_EXAM_CORE_PREFIX . 'profile', EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ], $statusArgs );
-
-		if ( is_wp_error( $statusTaxonomy ) ) {
-			$errors['status'] = 'Не удалось зарегистрировать status taxonomy';
-		}
-
-		/*
-		 * Taxonomy: Tutor Status
-		 */
-		$statusLabels = [
-			'name'                       => 'Статусы репетиторов',
-			'singular_name'              => 'Статус репетитора',
-			'menu_name'                  => 'Статусы репетиторов',
-			'all_items'                  => 'Все статусы репетиторов',
-			'edit_item'                  => 'Редактировать статус репетитора',
-			'view_item'                  => 'Просмотреть статусы репетиторов',
-			'update_item'                => 'Обновить статус репетитора',
-			'add_new_item'               => 'Добавить новый статус репетитора',
-			'new_item_name'              => 'Новое название статуса репетитора',
-			'parent_item'                => 'Главный статус репетитора',
-			'parent_item_colon'          => 'Главный статус репетитора',
-			'search_items'               => 'Найти статусы репетиторов',
-			'popular_items'              => 'Популярные статусы репетиторов',
-			'separate_items_with_commas' => 'Разделить статусы репетиторов запятой',
-			'add_or_remove_items'        => 'Добавить или удалить статусы репетиторов',
-			'choose_from_most_used'      => 'Выбрать среди популярных',
-			'not_found'                  => 'Статусы репетиторов не найдены',
-			'no_terms'                   => 'Нет статусов репетиторов',
-			'items_list_navigation'      => 'Навигация по списку статусов репетиторов',
-			'items_list'                 => 'Список статусов репетиторов',
-		];
-
-		$statusArgs = [
-			'label'             => 'Статусы репетиторов',
-			'labels'            => $statusLabels,
-			'public'            => false,
-			'show_ui'           => true,
-			'show_in_menu'      => true,
-			'show_admin_column' => false,
-			'has_archive'       => false,
-			'hierarchical'      => false,
-			'query_var'         => false,
-			'capabilities'      => [
-				'manage_terms' => 'manage_categories',
-				'edit_terms'   => 'manage_categories',
-				'delete_terms' => 'manage_categories',
-				'assign_terms' => 'manage_categories',
-			]
-		];
-
-		$statusTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'status', [ EXCELLENT_EXAM_CORE_PREFIX . 'profile', EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ], $statusArgs );
+		$statusTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'status', [
+			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		], $statusArgs );
 
 		if ( is_wp_error( $statusTaxonomy ) ) {
 			$errors['status'] = 'Не удалось зарегистрировать status taxonomy';
@@ -754,7 +725,10 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$markTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'mark', [ EXCELLENT_EXAM_CORE_PREFIX . 'profile', EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ], $markArgs );
+		$markTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'mark', [
+			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		], $markArgs );
 
 		if ( is_wp_error( $markTaxonomy ) ) {
 			$errors['mark'] = 'Не удалось зарегистрировать mark taxonomy';
@@ -770,16 +744,425 @@ class Excellent_Exam_Core_Hooks {
 
 	/**
 	 * Register Custom Meta
-	 * @return WP_Error|void
+	 * @return void
 	 * @since 1.0.0
 	 * @wp-hook init
 	 */
 	public function registerCustomMeta() {
+		$this->registerProfileMeta();
+		$this->registerVacancyMeta();
+		$this->registerMessageMeta();
+		$this->registerFeedbackMeta();
+	}
+
+	/**
+	 * @return WP_Error|void
+	 */
+	private function registerProfileMeta() {
+		$errors = [];
+
+		$objectType = EXCELLENT_EXAM_CORE_PREFIX . 'profile';
+
+		/*
+		 * Text fields
+		 */
+
+		/*
+		 * First Name
+		 */
+		$firstNameArgs = [
+			'type' => 'string',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => '',
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$firstName = register_meta($objectType, 'firstName', $firstNameArgs);
+
+		if (!$firstName) {
+			$errors['firstName'] = 'Не удалось зарегистрировать мета-поле firstName';
+		}
+
+		/*
+		 * Middle Name
+		 */
+		$middleNameArgs = [
+			'type' => 'string',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => '',
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$middleName = register_meta($objectType, 'middleName', $middleNameArgs);
+
+		if (!$middleName) {
+			$errors['middleName'] = 'Не удалось зарегистрировать мета-поле middleName';
+		}
+
+		/*
+		 * Last Name
+		 */
+		$lastNameArgs = [
+			'type' => 'string',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => '',
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$lastName = register_meta($objectType, 'lastName', $lastNameArgs);
+
+		if (!$lastName) {
+			$errors['lastName'] = 'Не удалось зарегистрировать мета-поле lastName';
+		}
+
+		/*
+		 * Email
+		 */
+		$emailArgs = [
+			'type' => 'string',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => '',
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$email = register_meta($objectType, 'email', $emailArgs);
+
+		if (!$email) {
+			$errors['email'] = 'Не удалось зарегистрировать мета-поле email';
+		}
+
+		if ( ! empty( $errors ) ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
+		}
+
+		/*
+		 * Phone
+		 */
+		$phoneArgs = [
+			'type' => 'string',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => '',
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$phone = register_meta($objectType, 'phone', $phoneArgs);
+
+		if (!$phone) {
+			$errors['phone'] = 'Не удалось зарегистрировать мета-поле phone';
+		}
+
+		/*
+		 * Area
+		 */
+		$areaArgs = [
+			'type' => 'string',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => '',
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$area = register_meta($objectType, 'area', $areaArgs);
+
+		if (!$area) {
+			$errors['area'] = 'Не удалось зарегистрировать мета-поле area';
+		}
+
+		/*
+		 * Education
+		 */
+		$educationArgs = [
+			'type' => 'string',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => '',
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$education = register_meta($objectType, 'education', $educationArgs);
+
+		if (!$education) {
+			$errors['education'] = 'Не удалось зарегистрировать мета-поле education';
+		}
+
+		/*
+		 * Description
+		 */
+		$descriptionArgs = [
+			'type' => 'string',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => '',
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$description = register_meta($objectType, 'description', $descriptionArgs);
+
+		if (!$description) {
+			$errors['description'] = 'Не удалось зарегистрировать мета-поле description';
+		}
+
+		/*
+		 * Integer fields
+		 */
+
+		/*
+		 * Birth Year
+		 */
+		$birthYearArgs = [
+			'type' => 'integer',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => 0,
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$birthYear = register_meta($objectType, 'birthYear', $birthYearArgs);
+
+		if (!$birthYear) {
+			$errors['birthYear'] = 'Не удалось зарегистрировать мета-поле birthYear';
+		}
+
+		/*
+		 * Hourly rate
+		 */
+		$hourlyRateArgs = [
+			'type' => 'integer',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => 0,
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$hourlyRate = register_meta($objectType, 'hourlyRate', $hourlyRateArgs);
+
+		if (!$hourlyRate) {
+			$errors['hourlyRate'] = 'Не удалось зарегистрировать мета-поле hourlyRate';
+		}
+
+		/*
+		 * Experience
+		 */
+		$experienceArgs = [
+			'type' => 'integer',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => 0,
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$experience = register_meta($objectType, 'experience', $experienceArgs);
+
+		if (!$experience) {
+			$errors['experience'] = 'Не удалось зарегистрировать мета-поле experience';
+		}
+
+		/*
+		 * Term Fields
+		 */
+
+		/*
+		 * City term Id
+		 */
+		$cityTermIdArgs = [
+			'type' => 'integer',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => 0,
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$cityTermId = register_meta($objectType, 'cityTermId', $cityTermIdArgs);
+
+		if (!$cityTermId) {
+			$errors['cityTermId'] = 'Не удалось зарегистрировать мета-поле cityTermId';
+		}
+
+		/*
+		 * Metro term Id
+		 */
+		$metroTermIdArgs = [
+			'type' => 'integer',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => 0,
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$metroTermId = register_meta($objectType, 'metroTermId', $metroTermIdArgs);
+
+		if (!$metroTermId) {
+			$errors['metroTermId'] = 'Не удалось зарегистрировать мета-поле metroTermId';
+		}
+
+		/*
+		 * Status term Id
+		 */
+		$statusTermIdArgs = [
+			'type' => 'integer',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => 0,
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$statusTermId = register_meta($objectType, 'statusTermId', $statusTermIdArgs);
+
+		if (!$statusTermId) {
+			$errors['statusTermId'] = 'Не удалось зарегистрировать мета-поле statusTermId';
+		}
+
+		/*
+		 * Gender term Id
+		 */
+		$genderTermIdArgs = [
+			'type' => 'integer',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => 0,
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$genderTermId = register_meta($objectType, 'genderTermId', $genderTermIdArgs);
+
+		if (!$genderTermId) {
+			$errors['genderTermId'] = 'Не удалось зарегистрировать мета-поле genderTermId';
+		}
+
+		/*
+		 * Place term Ids
+		 */
+		$placeTermIdsArgs = [
+			'type' => 'array',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => [],
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$placeTermIds = register_meta($objectType, 'placeTermIds', $placeTermIdsArgs);
+
+		if (!$placeTermIds) {
+			$errors['placeTermIds'] = 'Не удалось зарегистрировать мета-поле placeTermIds';
+		}
+
+		/*
+		 * Subject term Ids
+		 */
+		$subjectTermIdsArgs = [
+			'type' => 'array',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => [],
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$subjectTermIds = register_meta($objectType, 'subjectTermIds', $subjectTermIdsArgs);
+
+		if (!$subjectTermIds) {
+			$errors['subjectTermIds'] = 'Не удалось зарегистрировать мета-поле subjectTermIds';
+		}
+
+		/*
+		 * Students term Ids
+		 */
+		$studentsTermIdsArgs = [
+			'type' => 'array',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => [],
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$studentsTermIds = register_meta($objectType, 'studentsTermIds', $studentsTermIdsArgs);
+
+		if (!$studentsTermIds) {
+			$errors['studentsTermIds'] = 'Не удалось зарегистрировать мета-поле studentsTermIds';
+		}
+
+		/*
+		 * Marks term Ids
+		 */
+		$markTermIdsArgs = [
+			'type' => 'array',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => [],
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$markTermIds = register_meta($objectType, 'markTermIds', $markTermIdsArgs);
+
+		if (!$markTermIds) {
+			$errors['markTermIds'] = 'Не удалось зарегистрировать мета-поле markTermIds';
+		}
+
+		/*
+		 * Relationship fields
+		 */
+
+		/*
+		 * Owner Id
+		 */
+		$ownerUserIdArgs = [
+			'type' => 'integer',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => 0,
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$ownerUserId = register_meta($objectType, 'ownerUserId', $ownerUserIdArgs);
+
+		if (!$ownerUserId) {
+			$errors['ownerUserId'] = 'Не удалось зарегистрировать мета-поле ownerUserId';
+		}
+
+		if ( ! empty( $errors ) ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
+		}
+	}
+
+	/**
+	 * @return WP_Error|void
+	 */
+	private function registerVacancyMeta() {
 		$errors = [];
 
 		if ( ! empty( $errors ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerCustomMeta', $errors );
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerVacancyMeta', $errors );
 		}
+	}
+
+	/**
+	 * @return WP_Error|void
+	 */
+	private function registerMessageMeta() {
+		$errors = [];
+
+		if ( ! empty( $errors ) ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerMessageMeta', $errors );
+		}
+	}
+
+	/**
+	 * @return WP_Error|void
+	 */
+	private function registerFeedbackMeta() {
+		$errors = [];
+
+		if ( ! empty( $errors ) ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerFeedbackMeta', $errors );
+		}
+	}
+
+	public function sanitizeMeta($value, $key, $objectType) {
+		return $value;
 	}
 
 }
