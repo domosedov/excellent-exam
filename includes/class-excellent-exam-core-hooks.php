@@ -10,6 +10,8 @@
  * @subpackage Excellent_Exam_Core/public
  */
 
+use Domosed\EEC\Routes\Profile;
+
 /**
  * The functionality of the plugin.
  *
@@ -110,7 +112,7 @@ class Excellent_Exam_Core_Hooks {
 			'hierarchical'     => false,
 			'query_var'        => false,
 			'menu_icon'        => 'dashicons-id-alt',
-			'supports'         => [ 'title', 'editor', 'author' ]
+			'supports'         => [ 'title', 'author' ]
 		];
 
 		$profileType = register_post_type( EXCELLENT_EXAM_CORE_PREFIX . 'profile', $profileArgs );
@@ -168,7 +170,7 @@ class Excellent_Exam_Core_Hooks {
 			'hierarchical'     => false,
 			'query_var'        => false,
 			'menu_icon'        => 'dashicons-pressthis',
-			'supports'         => [ 'title', 'editor' ]
+			'supports'         => [ 'title' ]
 		];
 
 		$vacancyType = register_post_type( EXCELLENT_EXAM_CORE_PREFIX . 'vacancy', $vacancyArgs );
@@ -768,6 +770,23 @@ class Excellent_Exam_Core_Hooks {
 		 */
 
 		/*
+		 * uuid
+		 */
+		$uuidArgs = [
+			'type' => 'string',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => '',
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$uuid = register_meta($objectType, 'uuid', $uuidArgs);
+
+		if (!$uuid) {
+			$errors['uuid'] = 'Не удалось зарегистрировать мета-поле uuid';
+		}
+
+		/*
 		 * First Name
 		 */
 		$firstNameArgs = [
@@ -1123,6 +1142,23 @@ class Excellent_Exam_Core_Hooks {
 			$errors['ownerUserId'] = 'Не удалось зарегистрировать мета-поле ownerUserId';
 		}
 
+		/*
+		 * Avatar Attachment Id
+		 */
+		$avatarAttachmentIdArgs = [
+			'type' => 'integer',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => 0,
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$avatarAttachmentId = register_meta($objectType, 'avatarAttachmentId', $avatarAttachmentIdArgs);
+
+		if (!$avatarAttachmentId) {
+			$errors['avatarAttachmentId'] = 'Не удалось зарегистрировать мета-поле avatarAttachmentId';
+		}
+
 		if ( ! empty( $errors ) ) {
 			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
 		}
@@ -1162,7 +1198,15 @@ class Excellent_Exam_Core_Hooks {
 	}
 
 	public function sanitizeMeta($value, $key, $objectType) {
+		$v = $value;
+		$k = $key;
+		$type = $objectType;
 		return $value;
+	}
+
+	public function registerCustomRoutes() {
+		$profileRoute = new Profile();
+		$profileRoute->register_routes();
 	}
 
 }

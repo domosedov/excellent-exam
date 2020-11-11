@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "tightenco/collect": "^8.0"
+        "tightenco/collect": "^8.0",
+        "ramsey/uuid": "^4.1"
     },
     "autoload": {
         "psr-4": {

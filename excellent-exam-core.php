@@ -37,6 +37,7 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'EXCELLENT_EXAM_CORE_VERSION', '1.0.0' );
 define( 'EXCELLENT_EXAM_CORE_PREFIX', 'eec_');
+define( 'EXCELLENT_EXAM_CORE_API_NAMESPACE', 'eec/v1');
 
 /**
  * The code that runs during plugin activation.
