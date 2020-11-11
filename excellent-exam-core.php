@@ -36,6 +36,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Rename this for your plugin and update it as you release new versions.
  */
 define( 'EXCELLENT_EXAM_CORE_VERSION', '1.0.0' );
+define( 'EXCELLENT_EXAM_CORE_PREFIX', 'eec_');
 
 /**
  * The code that runs during plugin activation.
