@@ -14,6 +14,9 @@
         "ramsey/uuid": "^4.1"
     },
     "autoload": {
+        "files": [
+            "src/functions.php"
+        ],
         "psr-4": {
             "Domosed\\EEC\\": "src"
         }

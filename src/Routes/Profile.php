@@ -36,14 +36,18 @@ class Profile extends WP_REST_Controller {
 	/**
 	 * @param WP_REST_Request $request
 	 *
-	 * @return false|WP_Error|WP_REST_Response
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function create_item( $request ) {
 
 		$firstName = $request->get_param( 'firstName' );
+		$avatar = $request->get_file_params()['avatar'];
 
+		if (empty($avatar['error'])) {
+			$uploadedImageId = handleUploadImageFile($avatar, 20);
+		}
 
-		return rest_ensure_response( [ 'message' => 'success' ] );
+		return rest_ensure_response( [ 'message' => $uploadedImageId ?? false, 'user' => $firstName ] );
 	}
 
 	/**

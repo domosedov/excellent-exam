@@ -6,9 +6,9 @@ use Ramsey\Uuid\Uuid;
  * Handle upload image
  *
  * @param array $uploadedFile single element of $_FILES
- * @param int $relationshipId
+ * @param int $relationshipId Uploaded Image ID
  *
- * @return int|WP_Error
+ * @return int|WP_Error Return ID on success or WP_Error on failure
  */
 function handleUploadImageFile( $uploadedFile, $relationshipId = 0 ) {
 
@@ -40,11 +40,9 @@ function handleUploadImageFile( $uploadedFile, $relationshipId = 0 ) {
 	$id = wp_insert_attachment( $args, $file, $relationshipId, true );
 
 	if ( ! is_wp_error( $id ) ) {
-		$metadata = wp_generate_attachment_metadata( $id, $file );
 
-		if ( ! wp_update_attachment_metadata( $id, $metadata ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось обновить мета-данные изображения.' );
-		}
+		wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file ) );
+
 	}
 
 	return $id;
