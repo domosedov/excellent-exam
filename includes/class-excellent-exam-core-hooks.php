@@ -1159,6 +1159,40 @@ class Excellent_Exam_Core_Hooks {
 			$errors['avatarAttachmentId'] = 'Не удалось зарегистрировать мета-поле avatarAttachmentId';
 		}
 
+		/*
+		 * Document Attachment Ids
+		 */
+		$documentAttachmentIdsArgs = [
+			'type' => 'array',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => [],
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$documentAttachmentIds = register_meta($objectType, 'documentAttachmentIds', $documentAttachmentIdsArgs);
+
+		if (!$documentAttachmentIds) {
+			$errors['documentAttachmentIds'] = 'Не удалось зарегистрировать мета-поле documentAttachmentIds';
+		}
+
+		/*
+		 * Feedback Attachment Ids
+		 */
+		$feedbackIdsArgs = [
+			'type' => 'array',
+			'single' => true,
+			'show_in_rest' => false,
+			'default' => [],
+			'sanitize_callback' => [$this, 'sanitizeMeta']
+		];
+
+		$feedbackIds = register_meta($objectType, 'feedbackIds', $feedbackIdsArgs);
+
+		if (!$feedbackIds) {
+			$errors['feedbackIds'] = 'Не удалось зарегистрировать мета-поле feedbackIds';
+		}
+
 		if ( ! empty( $errors ) ) {
 			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
 		}
@@ -1198,9 +1232,7 @@ class Excellent_Exam_Core_Hooks {
 	}
 
 	public function sanitizeMeta($value, $key, $objectType) {
-		$v = $value;
-		$k = $key;
-		$type = $objectType;
+		//TODO Add sanitizeMeta
 		return $value;
 	}
 
