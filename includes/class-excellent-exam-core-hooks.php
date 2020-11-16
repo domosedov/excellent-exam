@@ -773,16 +773,17 @@ class Excellent_Exam_Core_Hooks {
 		 * uuid
 		 */
 		$uuidArgs = [
-			'type' => 'string',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => '',
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$uuid = register_meta($objectType, 'uuid', $uuidArgs);
+		$uuid = register_meta( $objectType, 'uuid', $uuidArgs );
 
-		if (!$uuid) {
+		if ( ! $uuid ) {
 			$errors['uuid'] = 'Не удалось зарегистрировать мета-поле uuid';
 		}
 
@@ -790,16 +791,17 @@ class Excellent_Exam_Core_Hooks {
 		 * First Name
 		 */
 		$firstNameArgs = [
-			'type' => 'string',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => '',
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$firstName = register_meta($objectType, 'firstName', $firstNameArgs);
+		$firstName = register_meta( $objectType, 'firstName', $firstNameArgs );
 
-		if (!$firstName) {
+		if ( ! $firstName ) {
 			$errors['firstName'] = 'Не удалось зарегистрировать мета-поле firstName';
 		}
 
@@ -807,16 +809,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Middle Name
 		 */
 		$middleNameArgs = [
-			'type' => 'string',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => '',
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$middleName = register_meta($objectType, 'middleName', $middleNameArgs);
+		$middleName = register_meta( $objectType, 'middleName', $middleNameArgs );
 
-		if (!$middleName) {
+		if ( ! $middleName ) {
 			$errors['middleName'] = 'Не удалось зарегистрировать мета-поле middleName';
 		}
 
@@ -824,16 +827,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Last Name
 		 */
 		$lastNameArgs = [
-			'type' => 'string',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => '',
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$lastName = register_meta($objectType, 'lastName', $lastNameArgs);
+		$lastName = register_meta( $objectType, 'lastName', $lastNameArgs );
 
-		if (!$lastName) {
+		if ( ! $lastName ) {
 			$errors['lastName'] = 'Не удалось зарегистрировать мета-поле lastName';
 		}
 
@@ -841,16 +845,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Email
 		 */
 		$emailArgs = [
-			'type' => 'string',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => '',
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$email = register_meta($objectType, 'email', $emailArgs);
+		$email = register_meta( $objectType, 'email', $emailArgs );
 
-		if (!$email) {
+		if ( ! $email ) {
 			$errors['email'] = 'Не удалось зарегистрировать мета-поле email';
 		}
 
@@ -862,16 +867,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Phone
 		 */
 		$phoneArgs = [
-			'type' => 'string',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => '',
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$phone = register_meta($objectType, 'phone', $phoneArgs);
+		$phone = register_meta( $objectType, 'phone', $phoneArgs );
 
-		if (!$phone) {
+		if ( ! $phone ) {
 			$errors['phone'] = 'Не удалось зарегистрировать мета-поле phone';
 		}
 
@@ -879,16 +885,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Area
 		 */
 		$areaArgs = [
-			'type' => 'string',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => '',
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$area = register_meta($objectType, 'area', $areaArgs);
+		$area = register_meta( $objectType, 'area', $areaArgs );
 
-		if (!$area) {
+		if ( ! $area ) {
 			$errors['area'] = 'Не удалось зарегистрировать мета-поле area';
 		}
 
@@ -896,16 +903,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Education
 		 */
 		$educationArgs = [
-			'type' => 'string',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => '',
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$education = register_meta($objectType, 'education', $educationArgs);
+		$education = register_meta( $objectType, 'education', $educationArgs );
 
-		if (!$education) {
+		if ( ! $education ) {
 			$errors['education'] = 'Не удалось зарегистрировать мета-поле education';
 		}
 
@@ -913,16 +921,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Description
 		 */
 		$descriptionArgs = [
-			'type' => 'string',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => '',
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$description = register_meta($objectType, 'description', $descriptionArgs);
+		$description = register_meta( $objectType, 'description', $descriptionArgs );
 
-		if (!$description) {
+		if ( ! $description ) {
 			$errors['description'] = 'Не удалось зарегистрировать мета-поле description';
 		}
 
@@ -934,16 +943,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Birth Year
 		 */
 		$birthYearArgs = [
-			'type' => 'integer',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => 0,
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$birthYear = register_meta($objectType, 'birthYear', $birthYearArgs);
+		$birthYear = register_meta( $objectType, 'birthYear', $birthYearArgs );
 
-		if (!$birthYear) {
+		if ( ! $birthYear ) {
 			$errors['birthYear'] = 'Не удалось зарегистрировать мета-поле birthYear';
 		}
 
@@ -951,16 +961,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Hourly rate
 		 */
 		$hourlyRateArgs = [
-			'type' => 'integer',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => 0,
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$hourlyRate = register_meta($objectType, 'hourlyRate', $hourlyRateArgs);
+		$hourlyRate = register_meta( $objectType, 'hourlyRate', $hourlyRateArgs );
 
-		if (!$hourlyRate) {
+		if ( ! $hourlyRate ) {
 			$errors['hourlyRate'] = 'Не удалось зарегистрировать мета-поле hourlyRate';
 		}
 
@@ -968,16 +979,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Experience
 		 */
 		$experienceArgs = [
-			'type' => 'integer',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => 0,
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$experience = register_meta($objectType, 'experience', $experienceArgs);
+		$experience = register_meta( $objectType, 'experience', $experienceArgs );
 
-		if (!$experience) {
+		if ( ! $experience ) {
 			$errors['experience'] = 'Не удалось зарегистрировать мета-поле experience';
 		}
 
@@ -989,16 +1001,17 @@ class Excellent_Exam_Core_Hooks {
 		 * City term Id
 		 */
 		$cityTermIdArgs = [
-			'type' => 'integer',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => 0,
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$cityTermId = register_meta($objectType, 'cityTermId', $cityTermIdArgs);
+		$cityTermId = register_meta( $objectType, 'cityTermId', $cityTermIdArgs );
 
-		if (!$cityTermId) {
+		if ( ! $cityTermId ) {
 			$errors['cityTermId'] = 'Не удалось зарегистрировать мета-поле cityTermId';
 		}
 
@@ -1006,16 +1019,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Metro term Id
 		 */
 		$metroTermIdArgs = [
-			'type' => 'integer',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => 0,
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$metroTermId = register_meta($objectType, 'metroTermId', $metroTermIdArgs);
+		$metroTermId = register_meta( $objectType, 'metroTermId', $metroTermIdArgs );
 
-		if (!$metroTermId) {
+		if ( ! $metroTermId ) {
 			$errors['metroTermId'] = 'Не удалось зарегистрировать мета-поле metroTermId';
 		}
 
@@ -1023,16 +1037,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Status term Id
 		 */
 		$statusTermIdArgs = [
-			'type' => 'integer',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => 0,
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$statusTermId = register_meta($objectType, 'statusTermId', $statusTermIdArgs);
+		$statusTermId = register_meta( $objectType, 'statusTermId', $statusTermIdArgs );
 
-		if (!$statusTermId) {
+		if ( ! $statusTermId ) {
 			$errors['statusTermId'] = 'Не удалось зарегистрировать мета-поле statusTermId';
 		}
 
@@ -1040,16 +1055,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Gender term Id
 		 */
 		$genderTermIdArgs = [
-			'type' => 'integer',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => 0,
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$genderTermId = register_meta($objectType, 'genderTermId', $genderTermIdArgs);
+		$genderTermId = register_meta( $objectType, 'genderTermId', $genderTermIdArgs );
 
-		if (!$genderTermId) {
+		if ( ! $genderTermId ) {
 			$errors['genderTermId'] = 'Не удалось зарегистрировать мета-поле genderTermId';
 		}
 
@@ -1057,16 +1073,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Place term Ids
 		 */
 		$placeTermIdsArgs = [
-			'type' => 'array',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => [],
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'array',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => [],
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$placeTermIds = register_meta($objectType, 'placeTermIds', $placeTermIdsArgs);
+		$placeTermIds = register_meta( $objectType, 'placeTermIds', $placeTermIdsArgs );
 
-		if (!$placeTermIds) {
+		if ( ! $placeTermIds ) {
 			$errors['placeTermIds'] = 'Не удалось зарегистрировать мета-поле placeTermIds';
 		}
 
@@ -1074,50 +1091,53 @@ class Excellent_Exam_Core_Hooks {
 		 * Subject term Ids
 		 */
 		$subjectTermIdsArgs = [
-			'type' => 'array',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => [],
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'array',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => [],
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$subjectTermIds = register_meta($objectType, 'subjectTermIds', $subjectTermIdsArgs);
+		$subjectTermIds = register_meta( $objectType, 'subjectTermIds', $subjectTermIdsArgs );
 
-		if (!$subjectTermIds) {
+		if ( ! $subjectTermIds ) {
 			$errors['subjectTermIds'] = 'Не удалось зарегистрировать мета-поле subjectTermIds';
 		}
 
 		/*
 		 * Students term Ids
 		 */
-		$studentsTermIdsArgs = [
-			'type' => 'array',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => [],
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+		$studentTermIdsArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'array',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => [],
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$studentsTermIds = register_meta($objectType, 'studentsTermIds', $studentsTermIdsArgs);
+		$studentTermIds = register_meta( $objectType, 'studentTermIds', $studentTermIdsArgs );
 
-		if (!$studentsTermIds) {
-			$errors['studentsTermIds'] = 'Не удалось зарегистрировать мета-поле studentsTermIds';
+		if ( ! $studentTermIds ) {
+			$errors['studentTermIds'] = 'Не удалось зарегистрировать мета-поле studentTermIds';
 		}
 
 		/*
 		 * Marks term Ids
 		 */
 		$markTermIdsArgs = [
-			'type' => 'array',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => [],
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'array',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => [],
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$markTermIds = register_meta($objectType, 'markTermIds', $markTermIdsArgs);
+		$markTermIds = register_meta( $objectType, 'markTermIds', $markTermIdsArgs );
 
-		if (!$markTermIds) {
+		if ( ! $markTermIds ) {
 			$errors['markTermIds'] = 'Не удалось зарегистрировать мета-поле markTermIds';
 		}
 
@@ -1129,16 +1149,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Owner Id
 		 */
 		$ownerUserIdArgs = [
-			'type' => 'integer',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => 0,
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$ownerUserId = register_meta($objectType, 'ownerUserId', $ownerUserIdArgs);
+		$ownerUserId = register_meta( $objectType, 'ownerUserId', $ownerUserIdArgs );
 
-		if (!$ownerUserId) {
+		if ( ! $ownerUserId ) {
 			$errors['ownerUserId'] = 'Не удалось зарегистрировать мета-поле ownerUserId';
 		}
 
@@ -1146,16 +1167,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Avatar Attachment Id
 		 */
 		$avatarAttachmentIdArgs = [
-			'type' => 'integer',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => 0,
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$avatarAttachmentId = register_meta($objectType, 'avatarAttachmentId', $avatarAttachmentIdArgs);
+		$avatarAttachmentId = register_meta( $objectType, 'avatarAttachmentId', $avatarAttachmentIdArgs );
 
-		if (!$avatarAttachmentId) {
+		if ( ! $avatarAttachmentId ) {
 			$errors['avatarAttachmentId'] = 'Не удалось зарегистрировать мета-поле avatarAttachmentId';
 		}
 
@@ -1163,16 +1185,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Document Attachment Ids
 		 */
 		$documentAttachmentIdsArgs = [
-			'type' => 'array',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => [],
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'array',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => [],
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$documentAttachmentIds = register_meta($objectType, 'documentAttachmentIds', $documentAttachmentIdsArgs);
+		$documentAttachmentIds = register_meta( $objectType, 'documentAttachmentIds', $documentAttachmentIdsArgs );
 
-		if (!$documentAttachmentIds) {
+		if ( ! $documentAttachmentIds ) {
 			$errors['documentAttachmentIds'] = 'Не удалось зарегистрировать мета-поле documentAttachmentIds';
 		}
 
@@ -1180,16 +1203,17 @@ class Excellent_Exam_Core_Hooks {
 		 * Feedback Attachment Ids
 		 */
 		$feedbackIdsArgs = [
-			'type' => 'array',
-			'single' => true,
-			'show_in_rest' => false,
-			'default' => [],
-			'sanitize_callback' => [$this, 'sanitizeMeta']
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'array',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => [],
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
 		];
 
-		$feedbackIds = register_meta($objectType, 'feedbackIds', $feedbackIdsArgs);
+		$feedbackIds = register_meta( $objectType, 'feedbackIds', $feedbackIdsArgs );
 
-		if (!$feedbackIds) {
+		if ( ! $feedbackIds ) {
 			$errors['feedbackIds'] = 'Не удалось зарегистрировать мета-поле feedbackIds';
 		}
 
@@ -1231,7 +1255,7 @@ class Excellent_Exam_Core_Hooks {
 		}
 	}
 
-	public function sanitizeMeta($value, $key, $objectType) {
+	public function sanitizeMeta( $value, $key, $objectType ) {
 		//TODO Add sanitizeMeta
 		return $value;
 	}

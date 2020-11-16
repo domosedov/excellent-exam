@@ -105,35 +105,38 @@ function createProfile( $userId, $metaArgs, $wpError = false ) {
 		'birthYear',
 		'hourlyRate',
 		'experience',
+		'statusTermId',
 		'cityTermId',
 		'placeTermIds',
 		'subjectTermIds',
-		'studentsTermIds',
+		'studentTermIds',
 	];
 
 	$uuid = Uuid::uuid4();
 
 	$defaultMetaArgs = [
-		'uuid'            => $uuid->toString(),
-		'ownerUserId'     => 0,
-		'firstName'       => '',
-		'middleName'      => '',
-		'lastName'        => '',
-		'email'           => '',
-		'phone'           => '',
-		'area'            => '',
-		'education'       => '',
-		'description'     => '',
-		'birthYear'       => 0,
-		'hourlyRate'      => 0,
-		'experience'      => 0,
-		'cityTermId'      => 0,
-		'metroTermId'     => 0,
-		'statusTermId'    => 0,
-		'placeTermIds'    => [],
-		'subjectTermIds'  => [],
-		'studentsTermIds' => [],
-		'markTermIds'     => [],
+		'uuid'                  => $uuid->toString(),
+		'ownerUserId'           => 0,
+		'firstName'             => '',
+		'middleName'            => '',
+		'lastName'              => '',
+		'email'                 => '',
+		'phone'                 => '',
+		'area'                  => '',
+		'education'             => '',
+		'description'           => '',
+		'birthYear'             => 0,
+		'hourlyRate'            => 0,
+		'experience'            => 0,
+		'cityTermId'            => 0,
+		'metroTermId'           => 0,
+		'statusTermId'          => 0,
+		'placeTermIds'          => [],
+		'subjectTermIds'        => [],
+		'studentTermIds'       => [],
+		'markTermIds'           => [],
+		'avatarAttachmentId'    => 0,
+		'documentAttachmentIds' => []
 	];
 
 	$args = wp_parse_args( $metaArgs, $defaultMetaArgs );
@@ -160,6 +163,8 @@ function createProfile( $userId, $metaArgs, $wpError = false ) {
 	}
 
 	$defaultArgs = [
+		'post_title'  => $args['firstName'] . ' ' . $args['lastName'],
+		'post_name'   => 'profile-' . $args['uuid'],
 		'post_type'   => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
 		'post_status' => 'pending',
 	];
@@ -200,7 +205,7 @@ if ( ! function_exists( 'setProfileAvatar' ) ) {
 	 */
 	function setProfileAvatar( $profileId, $imageAttachmentId, $wpError = false ) {
 		if ( postIsExists( $profileId ) && postIsExists( $imageAttachmentId ) ) {
-			if ( ! update_metadata( 'post', absint($profileId), 'avatarAttachmentId', absint($imageAttachmentId) ) ) {
+			if ( ! update_metadata( 'post', absint( $profileId ), 'avatarAttachmentId', absint( $imageAttachmentId ) ) ) {
 				if ( $wpError ) {
 					return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось установить avatarAttachmentId', [
 						'profileId' => $profileId,
