@@ -11,6 +11,7 @@
  */
 
 use Domosed\EEC\Routes\Profile;
+use Domosed\EEC\Routes\Upload;
 
 /**
  * The functionality of the plugin.
@@ -1263,6 +1264,9 @@ class Excellent_Exam_Core_Hooks {
 	public function registerCustomRoutes() {
 		$profileRoute = new Profile();
 		$profileRoute->register_routes();
+
+		$uploadRoute = new Upload();
+		$uploadRoute->registerRoutes();
 	}
 
 }

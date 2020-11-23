@@ -11,12 +11,18 @@ use WP_REST_Response;
 use WP_REST_Server;
 
 class Profile extends WP_REST_Controller {
+	public const ACCEPTED_FILE_TYPES = [ 'image/jpeg', 'image/png', 'image/gif' ];
+	public const MAX_FILE_SIZE = 2097152; // 2 MB
+
 	public function __construct() {
 		$this->namespace = EXCELLENT_EXAM_CORE_API_NAMESPACE;
 		$this->rest_base = 'profiles';
 	}
 
-	public function register_routes() {
+	/**
+	 * @return void
+	 */
+	public function register_routes(): void {
 		register_rest_route( $this->namespace, $this->rest_base, [
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
@@ -27,7 +33,7 @@ class Profile extends WP_REST_Controller {
 		] );
 	}
 
-	public function getCreateProfileArgs() {
+	public function getCreateProfileArgs(): array {
 		return [
 			'firstName'   => [
 				'type'              => 'string',
@@ -125,7 +131,7 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'place'      => [
+			'place'       => [
 				'type'              => 'array',
 				'items'             => [
 					'type' => 'integer'
@@ -136,7 +142,7 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'subject'    => [
+			'subject'     => [
 				'type'              => 'array',
 				'items'             => [
 					'type' => 'integer'
@@ -147,7 +153,7 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'student'    => [
+			'student'     => [
 				'type'              => 'array',
 				'items'             => [
 					'type' => 'integer'
@@ -190,17 +196,7 @@ class Profile extends WP_REST_Controller {
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	public function create_item( $request ) {
-
-		$firstName = $request->get_param( 'firstName' );
-		$avatar    = $request->get_file_params()['avatar'];
-		$docs    = $request->get_file_params()['documents'];
-
-		$students = $request->get_param( 'student' );
-
-		if ( empty( $avatar['error'] ) ) {
-			$uploadedImageId = handleUploadImageFile( $avatar, 20 );
-		}
+	public function create_item( WP_REST_Request $request ) {
 
 		return rest_ensure_response( $request->get_params() );
 	}
@@ -256,7 +252,7 @@ class Profile extends WP_REST_Controller {
 	 *
 	 * @return int[] Возвращает массив целых чисел или пустой массив
 	 */
-	public function sanitizeArrayOfInteger( $arr ) {
+	public function sanitizeArrayOfInteger( array $arr ): array {
 		if ( ! is_array( $arr ) ) {
 			return [];
 		}
@@ -265,9 +261,9 @@ class Profile extends WP_REST_Controller {
 			return [];
 		}
 
-		$output = array_filter( array_map( function ( $item ) {
+		$output = array_filter( array_map( static function ( $item ) {
 			return is_numeric( $item ) ? absint( $item ) : 0;
-		}, $arr ), function ( $item ) {
+		}, $arr ), static function ( $item ) {
 			return $item > 0;
 		} );
 
@@ -281,7 +277,7 @@ class Profile extends WP_REST_Controller {
 	 *
 	 * @return true|WP_Error
 	 */
-	public function validateArgs( $value, $request, $param ) {
+	public function validateArgs( $value, WP_REST_Request $request, string $param ) {
 		switch ( $param ) {
 			case 'firstName':
 			case 'middleName':
@@ -300,11 +296,19 @@ class Profile extends WP_REST_Controller {
 			case 'gender':
 				return $this->isValidTermId( $value, $param );
 			case 'metro':
-				return empty(absint($value)) ? true : $this->isValidTermId( $value, $param );
+				return empty( absint( $value ) ) ? true : $this->isValidTermId( $value, $param );
 			case 'student':
 			case 'subject':
 			case 'place':
 				return $this->isValidTermIds( $value, $param );
+			case 'avatar':
+				$avatar = $request->get_file_params()['avatar'];
+				if ( ! empty( $avatar ) && empty( $avatar['error'] ) ) {
+					return $this->validateFile( $avatar );
+				}
+
+				return true;
+			case 'documents':
 			default:
 				return true;
 		}
@@ -316,29 +320,41 @@ class Profile extends WP_REST_Controller {
 	 *
 	 * @return bool
 	 */
-	public function isValidTermId( $value, $param ) {
-		return array_search( absint( $value ), get_terms( [
-				'fields'     => 'ids',
-				'hide_empty' => false,
-				'taxonomy'   => EXCELLENT_EXAM_CORE_PREFIX . $param
-			] ) ) !== false;
-	}
-
-	public function isValidTermIds( $values, $param ) {
-		if (!is_array($values) || empty($values)) {
-			return false;
-		}
-
-		$termIds = get_terms([
+	public function isValidTermId( $value, string $param ): bool {
+		return in_array( absint( $value ), get_terms( [
 			'fields'     => 'ids',
 			'hide_empty' => false,
 			'taxonomy'   => EXCELLENT_EXAM_CORE_PREFIX . $param
-		]);
+		] ), true );
+	}
 
-		foreach ($values as $value) {
-			if (array_search(absint($value), $termIds) === false) {
+	public function isValidTermIds( $values, $param ) {
+		if ( ! is_array( $values ) || empty( $values ) ) {
+			return false;
+		}
+
+		$termIds = get_terms( [
+			'fields'     => 'ids',
+			'hide_empty' => false,
+			'taxonomy'   => EXCELLENT_EXAM_CORE_PREFIX . $param
+		] );
+
+		foreach ( $values as $value ) {
+			if ( ! in_array( absint( $value ), $termIds, true ) ) {
 				return false;
 			}
+		}
+
+		return true;
+	}
+
+	public function validateFile( $file ) {
+		if ( ! in_array( $file['type'], self::ACCEPTED_FILE_TYPES, true ) ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Invalid image type' );
+		}
+
+		if ( $file['size'] > self::MAX_FILE_SIZE ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Invalid image size' );
 		}
 
 		return true;

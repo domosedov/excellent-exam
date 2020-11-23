@@ -9,6 +9,8 @@ use Ramsey\Uuid\Uuid;
  * @param array $uploadedFile single element of $_FILES
  * @param int $relationshipId Uploaded Image ID
  *
+ * @param bool $wpError Return WP_Error
+ *
  * @return int|WP_Error Return ID on success or WP_Error on failure
  */
 function handleUploadImageFile( $uploadedFile, $relationshipId = 0, $wpError = false ) {
@@ -33,9 +35,9 @@ function handleUploadImageFile( $uploadedFile, $relationshipId = 0, $wpError = f
 	if ( isset( $file['error'] ) ) {
 		if ( $wpError ) {
 			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось обработать загрузку изображения.', $file['error'] );
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 
@@ -64,10 +66,8 @@ function handleUploadImageFile( $uploadedFile, $relationshipId = 0, $wpError = f
 		if ( ! is_wp_error( $id ) ) {
 			wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file ) );
 		}
-	} else {
-		if ( ! empty( $id ) ) {
-			wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file ) );
-		}
+	} else if ( ! empty( $id ) ) {
+		wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file ) );
 	}
 
 
@@ -87,9 +87,9 @@ function createProfile( $userId, $metaArgs, $wpError = false ) {
 	if ( ! userIsExists( $userId ) ) {
 		if ( $wpError ) {
 			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Неверный ID пользователя' );
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	$errors = [];
@@ -158,9 +158,9 @@ function createProfile( $userId, $metaArgs, $wpError = false ) {
 	if ( ! empty( $errors ) ) {
 		if ( $wpError ) {
 			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Отсутсвуют следующие обязательные поля', $errors );
-		} else {
-			return false;
 		}
+
+		return false;
 
 	}
 
@@ -187,11 +187,7 @@ function createProfile( $userId, $metaArgs, $wpError = false ) {
 function userIsExists( $userId ) {
 	$userId = get_userdata( absint( $userId ) );
 
-	if ( empty( $userId ) || is_wp_error( $userId ) ) {
-		return false;
-	}
-
-	return true;
+	return ! ( empty( $userId ) || is_wp_error( $userId ) );
 }
 
 if ( ! function_exists( 'setProfileAvatar' ) ) {
@@ -214,22 +210,62 @@ if ( ! function_exists( 'setProfileAvatar' ) ) {
 						'metaKey'   => 'avatarAttachmentId',
 						'metaValue' => $imageAttachmentId
 					] );
-				} else {
-					return false;
 				}
+
+				return false;
 			}
 
 			return true;
-		} else {
-			if ( $wpError ) {
-				return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Профиль или изображение не существует', [
-					'profileId'         => $profileId,
-					'imageAttachmentId' => $imageAttachmentId
-				] );
+		}
+
+		if ( $wpError ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Профиль или изображение не существует', [
+				'profileId'         => $profileId,
+				'imageAttachmentId' => $imageAttachmentId
+			] );
+		}
+
+		return false;
+	}
+} else {
+	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию setProfileAvatar' );
+}
+
+if ( ! function_exists( 'setProfileDocuments' ) ) {
+	/**
+	 * Устанавливает аватар профиля
+	 *
+	 * @param int $profileId ID Профиля
+	 * @param int[] $imageAttachmentIds
+	 * @param bool $wpError Возвращать ошибку в случае неудачи
+	 *
+	 * @return bool|WP_Error Возвращет true в случае успеха или WP_Error при неудаче
+	 */
+	function setProfileDocuments( int $profileId, array $imageAttachmentIds, $wpError = false ) {
+		if ( postIsExists( $profileId ) && entitiesIsExists( $imageAttachmentIds, 'attachment' ) ) {
+			if ( ! update_metadata( 'post', absint( $profileId ), 'documentAttachmentIds', $imageAttachmentIds ) ) {
+				if ( $wpError ) {
+					return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось установить documentAttachmentIds', [
+						'profileId' => $profileId,
+						'metaKey'   => 'documentAttachmentIds',
+						'metaValue' => $imageAttachmentIds
+					] );
+				}
+
+				return false;
 			}
 
-			return false;
+			return true;
 		}
+
+		if ( $wpError ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Профиль или изображение не существует', [
+				'profileId'             => $profileId,
+				'documentAttachmentIds' => $imageAttachmentIds
+			] );
+		}
+
+		return false;
 	}
 } else {
 	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию setProfileAvatar' );
@@ -246,4 +282,61 @@ if ( ! function_exists( 'postIsExists' ) ) {
 	}
 } else {
 	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию postIsExists' );
+}
+
+if ( ! function_exists( 'postsIsExists' ) ) {
+	/**
+	 * @param int[] $entityIds {Post Type Object} Id
+	 *
+	 * @param string $postType
+	 *
+	 * @return bool
+	 */
+	function entitiesIsExists( array $entityIds, $postType = 'post' ) {
+		/*
+		 * Get all entities
+		 */
+		$args = [
+			'post_type'      => $postType,
+			'posts_per_page' => - 1,
+			'post_status'    => 'any',
+			'fields'         => 'ids'
+		];
+
+		$query = new WP_Query( $args );
+
+		/*
+		 * Ids array
+		 */
+		$allEntityIds = $query->get_posts();
+
+		foreach ( $entityIds as $entityId ) {
+			if ( ! in_array( $entityId, $allEntityIds, true ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+} else {
+	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию postIsExists' );
+}
+
+if ( ! function_exists( 'normalizeMultipleFileUpload' ) ) {
+	function normalizeMultipleFileUpload( $files ) {
+		$totalFiles = count( $files['name'] );
+		$output     = [];
+
+		for ( $i = 0; $i < $totalFiles; $i ++ ) {
+			$output[] = [
+				'name'     => $files['name'][ $i ],
+				'type'     => $files['type'][ $i ],
+				'tmp_name' => $files['tmp_name'][ $i ],
+				'error'    => $files['error'][ $i ],
+				'size'     => $files['size'][ $i ],
+			];
+		}
+
+		return $output;
+	}
 }
