@@ -6,11 +6,20 @@ namespace Domosed\EEC\Routes;
 
 use WP_Error;
 use WP_REST_Request;
+use WP_REST_Response;
 use WP_REST_Server;
 
 class Upload {
 	public const ACCEPTED_FILE_TYPES = [ 'image/jpeg', 'image/png', 'image/gif' ];
 	public const MAX_FILE_SIZE = 2097152; // 2 MB
+	/**
+	 * @var string
+	 */
+	private $namespace;
+	/**
+	 * @var string
+	 */
+	private $rest_base;
 
 	public function __construct() {
 		$this->namespace = EXCELLENT_EXAM_CORE_API_NAMESPACE;
@@ -43,20 +52,32 @@ class Upload {
 	 *
 	 * @return bool
 	 */
-	public function checkUploadProfileFilesPermission( WP_REST_Request $request ): bool {
+	public function checkUploadProfileFilesPermission( $request ): bool {
 		return true;
 		//TODO Add auth
 	}
 
 	/**
 	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function uploadProfileFiles( WP_REST_Request $request ) {
 
 		$profileId = postIsExists( $request->get_param( 'profileId' ) ) ? (int) $request->get_param( 'profileId' ) : 0;
 
+		if ( empty( $profileId ) ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Профиль не существует' );
+		}
+
 		$avatar    = $request->get_file_params()['avatar'];
 		$documents = $request->get_file_params()['documents'];
+
+		$response = [ 'message' => 'success' ];
+
+		if ( empty( $documents ) && empty( $avatar ) ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Empty Files' );
+		}
 
 		if ( ! empty( $avatar ) ) {
 			if ( is_wp_error( $this->validateFile( $avatar ) ) ) {
@@ -74,26 +95,64 @@ class Upload {
 			/*
 			 * Set Profile Avatar ID Meta
 			 */
-			if ( ! empty( $profileId ) ) {
-				$isSuccess = setProfileAvatar( $profileId, $avatarId, true );
-				if ( is_wp_error( $isSuccess ) ) {
-					return $isSuccess;
-				}
+
+			$isSuccess = setProfileAvatar( $profileId, $avatarId, true );
+			if ( is_wp_error( $isSuccess ) ) {
+				return $isSuccess;
 			}
+
+			$response['avatarId'] = $avatarId;
+
 		}
 
 		if ( ! ( empty( $documents ) ) ) {
 
-			$documents = normalizeMultipleFileUpload( $documents);
+			$documents = normalizeMultipleFileUpload( $documents );
 
-			$d = $documents;
+			/*
+			 * Check Files
+			 */
+			foreach ( $documents as $document ) {
+				$allIsValid = $this->validateFile( $document );
+
+				if ( is_wp_error( $allIsValid ) ) {
+					return $allIsValid; // Error
+				}
+			}
+
+			/*
+			 * If All files valid -> upload
+			 */
+			$documentIds = [];
+			foreach ( $documents as $document ) {
+				$documentId = handleUploadImageFile( $document, $profileId, true );
+				if ( is_wp_error( $documentId ) ) {
+					continue; // Skip Invalid Files
+				}
+
+				$documentIds[] = $documentId;
+				if ( empty( $documentIds ) ) {
+					return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Invalid images' );
+				}
+				$documentsIsSet = setProfileDocuments( $profileId, $documentIds, true );
+				if ( is_wp_error( $documentsIsSet ) ) {
+					return $documentsIsSet; // Error
+				}
+			}
+
+			$response['documentIds'] = $documentIds;
 
 		}
 
 
-		return rest_ensure_response( [ 'profileId' => $profileId ] );
+		return rest_ensure_response( $response );
 	}
 
+	/**
+	 * @param mixed $file
+	 *
+	 * @return bool|WP_Error
+	 */
 	public function validateFile( $file ) {
 		if ( ! in_array( $file['type'], self::ACCEPTED_FILE_TYPES, true ) ) {
 			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Invalid image type' );

@@ -196,7 +196,7 @@ class Profile extends WP_REST_Controller {
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
-	public function create_item( WP_REST_Request $request ) {
+	public function create_item( $request ) {
 
 		return rest_ensure_response( $request->get_params() );
 	}
@@ -328,7 +328,7 @@ class Profile extends WP_REST_Controller {
 		] ), true );
 	}
 
-	public function isValidTermIds( $values, $param ) {
+	public function isValidTermIds( $values, $param ): bool {
 		if ( ! is_array( $values ) || empty( $values ) ) {
 			return false;
 		}
