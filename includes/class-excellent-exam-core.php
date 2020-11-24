@@ -151,6 +151,10 @@ class Excellent_Exam_Core {
 		$this->loader->add_action( 'init', $plugin_hooks, 'registerCustomMeta' );
 		$this->loader->add_action( 'rest_api_init', $plugin_hooks, 'registerCustomRoutes' );
 
+		$this->loader->add_action( 'delete_attachment', $plugin_hooks, 'handleDeleteAttachment', 100, 2 );
+
+
+
 	}
 
 	/**

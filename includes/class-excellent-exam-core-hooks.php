@@ -1269,4 +1269,30 @@ class Excellent_Exam_Core_Hooks {
 		$uploadRoute->registerRoutes();
 	}
 
+	/**
+	 * Handle delete_attachment hook
+	 *
+	 * @param int|string $attachmentId Attachment Id
+	 * @param WP_Post $post Attachment Object
+	 * @return void
+	 */
+	public function handleDeleteAttachment( $attachmentId, WP_Post $post ): void {
+		/*
+		 * При удалении изображения проверяем не является ли оно аватаром или документов профиля,
+		 * если да, то обновляем мета-данные
+		 */
+		if ( ! empty( $post->post_parent ) && get_post_type( $post->post_parent ) === EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) {
+			$profileAvatarId    = absint( get_post_meta( $post->post_parent, 'avatarAttachmentId', true ) );
+			$profileDocumentIds = get_post_meta( $post->post_parent, 'documentAttachmentIds', true );
+			if ( $attachmentId === $profileAvatarId ) {
+				update_post_meta( $post->post_parent, 'avatarAttachmentId', 0 );
+			}
+			if ( is_array( $profileDocumentIds ) && ! empty( $profileDocumentIds ) && in_array( $attachmentId, $profileDocumentIds, true ) ) {
+				update_post_meta( $post->post_parent, 'documentAttachmentIds', array_filter( $profileDocumentIds,
+					static function ( $value ) use ( $attachmentId ) {
+						return (int) $value !== (int) $attachmentId;
+					} ) );
+			}
+		}
+	}
 }
