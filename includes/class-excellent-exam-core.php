@@ -153,6 +153,8 @@ class Excellent_Exam_Core {
 
 		$this->loader->add_action( 'delete_attachment', $plugin_hooks, 'handleDeleteAttachment', 100, 2 );
 
+		$this->loader->add_filter( 'pre_wp_unique_post_slug', $plugin_hooks, 'generateUniquePostSlug', 100, 6 );
+
 
 
 	}

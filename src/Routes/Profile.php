@@ -197,8 +197,44 @@ class Profile extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function create_item( $request ) {
+		/*
+		 * Mock user id
+		 */
+		$userId = 1;
 
-		return rest_ensure_response( $request->get_params() );
+		$args = [
+			'ownerUserId'    => $userId,
+			'firstName'      => $request->get_param( 'firstName' ),
+			'middleName'     => $request->get_param( 'middleName' ),
+			'lastName'       => $request->get_param( 'lastName' ),
+			'email'          => $request->get_param( 'email' ),
+			'phone'          => $request->get_param( 'phone' ),
+			'area'           => $request->get_param( 'area' ),
+			'education'      => $request->get_param( 'education' ),
+			'description'    => $request->get_param( 'description' ),
+			'birthYear'      => $request->get_param( 'birthYear' ),
+			'hourlyRate'     => $request->get_param( 'hourlyRate' ),
+			'experience'     => $request->get_param( 'experience' ),
+			'cityTermId'     => $request->get_param( 'city' ),
+			'genderTermId'   => $request->get_param( 'gender' ),
+			'metroTermId'    => $request->get_param( 'metro' ),
+			'statusTermId'   => $request->get_param( 'status' ),
+			'placeTermIds'   => $request->get_param( 'place' ),
+			'subjectTermIds' => $request->get_param( 'subject' ),
+			'studentTermIds' => $request->get_param( 'student' ),
+		];
+
+
+		$newProfileId = createProfile( $userId, $args, true );
+
+		if ( is_wp_error( $newProfileId ) ) {
+			return $newProfileId;
+		}
+
+		return rest_ensure_response( [
+			'message'   => 'success',
+			'profileId' => $newProfileId
+		] );
 	}
 
 	/**
@@ -284,6 +320,7 @@ class Profile extends WP_REST_Controller {
 			case 'lastName':
 			case 'education':
 			case 'phone':
+				//TODO ADD PHONE REGEXP
 				return is_string( $value ) && ! empty( $value );
 			case 'email':
 				return is_email( $value ) && ! empty( $value );

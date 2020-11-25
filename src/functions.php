@@ -166,7 +166,6 @@ function createProfile( $userId, $metaArgs, $wpError = false ) {
 
 	$defaultArgs = [
 		'post_title'  => $args['firstName'] . ' ' . $args['lastName'],
-		'post_name'   => 'profile-' . $args['uuid'],
 		'post_type'   => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
 		'post_status' => 'pending',
 	];
@@ -185,9 +184,7 @@ function createProfile( $userId, $metaArgs, $wpError = false ) {
  * @return bool
  */
 function userIsExists( $userId ) {
-	$userId = get_userdata( absint( $userId ) );
-
-	return ! ( empty( $userId ) || is_wp_error( $userId ) );
+	return ! (get_userdata( absint( $userId ) ) === false );
 }
 
 if ( ! function_exists( 'setProfileAvatar' ) ) {
@@ -233,7 +230,7 @@ if ( ! function_exists( 'setProfileAvatar' ) ) {
 
 if ( ! function_exists( 'setProfileDocuments' ) ) {
 	/**
-	 * Устанавливает аватар профиля
+	 * Устанавливает документы профиля
 	 *
 	 * @param int $profileId ID Профиля
 	 * @param int[] $imageAttachmentIds

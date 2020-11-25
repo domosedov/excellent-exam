@@ -1274,6 +1274,7 @@ class Excellent_Exam_Core_Hooks {
 	 *
 	 * @param int|string $attachmentId Attachment Id
 	 * @param WP_Post $post Attachment Object
+	 *
 	 * @return void
 	 */
 	public function handleDeleteAttachment( $attachmentId, WP_Post $post ): void {
@@ -1294,5 +1295,37 @@ class Excellent_Exam_Core_Hooks {
 					} ) );
 			}
 		}
+	}
+
+	/**
+	 * Generate Slug with UUID
+	 * @param string $overrideSlug
+	 * @param string $slug
+	 * @param int|string $postId
+	 * @param string $postStatus
+	 * @param string $postType
+	 * @param int|string $postParent
+	 *
+	 * @return string New Slug
+	 */
+	public function generateUniquePostSlug( $overrideSlug, $slug, $postId, $postStatus, $postType, $postParent ) {
+		switch ( $postType ) {
+			case EXCELLENT_EXAM_CORE_PREFIX . 'profile':
+				$uuid = get_post_meta( $postId, 'uuid', true );
+				if ( empty( $uuid ) ) {
+					$uuid = current_time( 'timestamp' );
+				}
+
+				return 'profile-' . $uuid;
+			case EXCELLENT_EXAM_CORE_PREFIX . 'vacancy':
+				$uuid = get_post_meta( $postId, 'uuid', true );
+				if ( empty( $uuid ) ) {
+					$uuid = current_time( 'timestamp' );
+				}
+
+				return 'vacancy-' . $uuid;
+		}
+
+		return $overrideSlug;
 	}
 }
