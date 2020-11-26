@@ -11,6 +11,7 @@
  */
 
 use Domosed\EEC\Routes\Profile;
+use Domosed\EEC\Routes\Vacancy;
 use Domosed\EEC\Routes\Upload;
 
 /**
@@ -1229,8 +1230,354 @@ class Excellent_Exam_Core_Hooks {
 	private function registerVacancyMeta() {
 		$errors = [];
 
+		$objectType = EXCELLENT_EXAM_CORE_PREFIX . 'vacancy';
+
+		/*
+		 * Text fields
+		 */
+
+		/*
+		 * uuid
+		 */
+		$uuidArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$uuid = register_meta( $objectType, 'uuid', $uuidArgs );
+
+		if ( ! $uuid ) {
+			$errors['uuid'] = 'Не удалось зарегистрировать мета-поле uuid';
+		}
+
+		/*
+		 * First Name
+		 */
+		$firstNameArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$firstName = register_meta( $objectType, 'firstName', $firstNameArgs );
+
+		if ( ! $firstName ) {
+			$errors['firstName'] = 'Не удалось зарегистрировать мета-поле firstName';
+		}
+
+		/*
+		 * Last Name
+		 */
+		$lastNameArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$lastName = register_meta( $objectType, 'lastName', $lastNameArgs );
+
+		if ( ! $lastName ) {
+			$errors['lastName'] = 'Не удалось зарегистрировать мета-поле lastName';
+		}
+
+		/*
+		 * Email
+		 */
+		$emailArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$email = register_meta( $objectType, 'email', $emailArgs );
+
+		if ( ! $email ) {
+			$errors['email'] = 'Не удалось зарегистрировать мета-поле email';
+		}
+
 		if ( ! empty( $errors ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerVacancyMeta', $errors );
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
+		}
+
+		/*
+		 * Phone
+		 */
+		$phoneArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$phone = register_meta( $objectType, 'phone', $phoneArgs );
+
+		if ( ! $phone ) {
+			$errors['phone'] = 'Не удалось зарегистрировать мета-поле phone';
+		}
+
+		/*
+		 * Area
+		 */
+		$areaArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$area = register_meta( $objectType, 'area', $areaArgs );
+
+		if ( ! $area ) {
+			$errors['area'] = 'Не удалось зарегистрировать мета-поле area';
+		}
+
+		/*
+		 * Purpose
+		 */
+		$purposeArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$purpose = register_meta( $objectType, 'purpose', $purposeArgs );
+
+		if ( ! $purpose ) {
+			$errors['purpose'] = 'Не удалось зарегистрировать мета-поле area';
+		}
+
+		/*
+		 * Description
+		 */
+		$descriptionArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$description = register_meta( $objectType, 'description', $descriptionArgs );
+
+		if ( ! $description ) {
+			$errors['description'] = 'Не удалось зарегистрировать мета-поле description';
+		}
+
+		/*
+		 * Integer fields
+		 */
+
+		/*
+		 * Hourly rate
+		 */
+		$hourlyRateArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$hourlyRate = register_meta( $objectType, 'hourlyRate', $hourlyRateArgs );
+
+		if ( ! $hourlyRate ) {
+			$errors['hourlyRate'] = 'Не удалось зарегистрировать мета-поле hourlyRate';
+		}
+
+		/*
+		 * Term Fields
+		 */
+
+		/*
+		 * City term Id
+		 */
+		$cityTermIdArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$cityTermId = register_meta( $objectType, 'cityTermId', $cityTermIdArgs );
+
+		if ( ! $cityTermId ) {
+			$errors['cityTermId'] = 'Не удалось зарегистрировать мета-поле cityTermId';
+		}
+
+		/*
+		 * Metro term Id
+		 */
+		$metroTermIdArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$metroTermId = register_meta( $objectType, 'metroTermId', $metroTermIdArgs );
+
+		if ( ! $metroTermId ) {
+			$errors['metroTermId'] = 'Не удалось зарегистрировать мета-поле metroTermId';
+		}
+
+		/*
+		 * Gender term Id
+		 */
+		$genderTermIdArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$genderTermId = register_meta( $objectType, 'genderTermId', $genderTermIdArgs );
+
+		if ( ! $genderTermId ) {
+			$errors['genderTermId'] = 'Не удалось зарегистрировать мета-поле genderTermId';
+		}
+
+		/*
+		 * Place term Id
+		 */
+		$placeTermIdArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$placeTermId = register_meta( $objectType, 'placeTermIds', $placeTermIdArgs );
+
+		if ( ! $placeTermId ) {
+			$errors['placeTermId'] = 'Не удалось зарегистрировать мета-поле placeTermId';
+		}
+
+		/*
+		 * Subject term Id
+		 */
+		$subjectTermIdArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$subjectTermId = register_meta( $objectType, 'subjectTermId', $subjectTermIdArgs );
+
+		if ( ! $subjectTermId ) {
+			$errors['subjectTermId'] = 'Не удалось зарегистрировать мета-поле subjectTermId';
+		}
+
+		/*
+		 * Student term Id
+		 */
+		$studentTermIdArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$studentTermId = register_meta( $objectType, 'studentTermId', $studentTermIdArgs );
+
+		if ( ! $studentTermId ) {
+			$errors['studentTermId'] = 'Не удалось зарегистрировать мета-поле studentTermId';
+		}
+
+		/*
+		 * Relationship fields
+		 */
+
+		/*
+		 * Selected Profile Id
+		 */
+		$selectedProfileIdArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$selectedProfileId = register_meta( $objectType, 'selectedProfileId', $selectedProfileIdArgs );
+
+		if ( ! $selectedProfileId ) {
+			$errors['selectedProfileId'] = 'Не удалось зарегистрировать мета-поле selectedProfileId';
+		}
+
+		/*
+		 * Executor Profile Id
+		 */
+		$executorProfileIdArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$executorProfileId = register_meta( $objectType, 'executorProfileId', $executorProfileIdArgs );
+
+		if ( ! $executorProfileId ) {
+			$errors['executorProfileId'] = 'Не удалось зарегистрировать мета-поле executorProfileId';
+		}
+
+		/*
+		 * Candidate Profile Ids
+		 */
+		$candidateProfileIdsArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'type'              => 'array',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$candidateProfileIds = register_meta( $objectType, 'candidateProfileIds', $candidateProfileIdsArgs );
+
+		if ( ! $candidateProfileIds ) {
+			$errors['executorProfileId'] = 'Не удалось зарегистрировать мета-поле candidateProfileIds';
+		}
+
+		if ( ! empty( $errors ) ) {
+			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
 		}
 	}
 
@@ -1261,9 +1608,16 @@ class Excellent_Exam_Core_Hooks {
 		return $value;
 	}
 
-	public function registerCustomRoutes() {
+	/**
+	 * Handle rest_api_init action
+	 * @return void
+	 */
+	public function registerCustomRoutes(): void {
 		$profileRoute = new Profile();
 		$profileRoute->register_routes();
+
+		$vacancyRoute = new Vacancy();
+		$vacancyRoute->register_routes();
 
 		$uploadRoute = new Upload();
 		$uploadRoute->registerRoutes();
@@ -1299,6 +1653,7 @@ class Excellent_Exam_Core_Hooks {
 
 	/**
 	 * Generate Slug with UUID
+	 *
 	 * @param string $overrideSlug
 	 * @param string $slug
 	 * @param int|string $postId

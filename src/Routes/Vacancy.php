@@ -10,13 +10,11 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
-class Profile extends WP_REST_Controller {
-	public const ACCEPTED_FILE_TYPES = [ 'image/jpeg', 'image/png', 'image/gif' ];
-	public const MAX_FILE_SIZE = 2097152; // 2 MB
+class Vacancy extends WP_REST_Controller {
 
 	public function __construct() {
 		$this->namespace = EXCELLENT_EXAM_CORE_API_NAMESPACE;
-		$this->rest_base = 'profiles';
+		$this->rest_base = 'vacancies';
 	}
 
 	/**
@@ -28,14 +26,14 @@ class Profile extends WP_REST_Controller {
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'create_item' ),
 				'permission_callback' => array( $this, 'create_item_permissions_check' ),
-				'args'                => $this->getCreateProfileArgs()
+				'args'                => $this->getCreateVacancyArgs()
 			]
 		] );
 	}
 
-	public function getCreateProfileArgs(): array {
+	public function getCreateVacancyArgs(): array {
 		return [
-			'firstName'   => [
+			'firstName'         => [
 				'type'              => 'string',
 				'description'       => 'Имя',
 				'default'           => '',
@@ -43,15 +41,7 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'middleName'  => [
-				'type'              => 'string',
-				'description'       => 'Отчество',
-				'default'           => '',
-				'required'          => true,
-				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
-				'validate_callback' => [ $this, 'validateArgs' ]
-			],
-			'lastName'    => [
+			'lastName'          => [
 				'type'              => 'string',
 				'description'       => 'Фамилия',
 				'default'           => '',
@@ -59,7 +49,7 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'phone'       => [
+			'phone'             => [
 				'type'              => 'string',
 				'description'       => 'Телефон',
 				'default'           => '',
@@ -67,7 +57,7 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'email'       => [
+			'email'             => [
 				'type'              => 'string',
 				'description'       => 'Email',
 				'default'           => '',
@@ -75,39 +65,15 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'education'   => [
-				'type'              => 'string',
-				'description'       => 'Образование',
-				'default'           => '',
-				'required'          => true,
-				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
-				'validate_callback' => [ $this, 'validateArgs' ]
-			],
-			'birthYear'   => [
-				'type'              => 'integer',
-				'description'       => 'Год рождения',
-				'default'           => 0,
-				'required'          => true,
-				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
-				'validate_callback' => [ $this, 'validateArgs' ]
-			],
-			'hourlyRate'  => [
+			'hourlyRate'        => [
 				'type'              => 'integer',
 				'description'       => 'Ставка в час',
 				'default'           => 0,
-				'required'          => true,
+				'required'          => false,
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'experience'  => [
-				'type'              => 'integer',
-				'description'       => 'Год начала деятельности',
-				'default'           => 0,
-				'required'          => true,
-				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
-				'validate_callback' => [ $this, 'validateArgs' ]
-			],
-			'city'        => [
+			'city'              => [
 				'type'              => 'integer',
 				'description'       => 'ID город',
 				'default'           => 0,
@@ -115,56 +81,39 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'status'      => [
-				'type'              => 'integer',
-				'description'       => 'ID Статус',
-				'default'           => 0,
-				'required'          => true,
-				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
-				'validate_callback' => [ $this, 'validateArgs' ]
-			],
-			'gender'      => [
+			'gender'            => [
 				'type'              => 'integer',
 				'description'       => 'ID Пол',
 				'default'           => 0,
+				'required'          => false,
+				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
+				'validate_callback' => [ $this, 'validateArgs' ]
+			],
+			'place'             => [
+				'type'              => 'integer',
+				'description'       => 'Id Место занятий',
+				'default'           => 0,
 				'required'          => true,
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'place'       => [
-				'type'              => 'array',
-				'items'             => [
-					'type' => 'integer'
-				],
-				'description'       => 'Ids Места занятий',
-				'default'           => [],
+			'subject'           => [
+				'type'              => 'integer',
+				'description'       => 'ID Предмет',
+				'default'           => 0,
 				'required'          => true,
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'subject'     => [
-				'type'              => 'array',
-				'items'             => [
-					'type' => 'integer'
-				],
-				'description'       => 'IDs Предметы',
-				'default'           => [],
+			'student'           => [
+				'type'              => 'integer',
+				'description'       => 'ID Категория ученика',
+				'default'           => 0,
 				'required'          => true,
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'student'     => [
-				'type'              => 'array',
-				'items'             => [
-					'type' => 'integer'
-				],
-				'description'       => 'IDs Категории учеников',
-				'default'           => [],
-				'required'          => true,
-				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
-				'validate_callback' => [ $this, 'validateArgs' ]
-			],
-			'metro'       => [
+			'metro'             => [
 				'type'              => 'integer',
 				'description'       => 'ID Метро',
 				'default'           => 0,
@@ -172,7 +121,7 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'area'        => [
+			'area'              => [
 				'type'              => 'string',
 				'description'       => 'Район',
 				'default'           => '',
@@ -180,9 +129,25 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
-			'description' => [
+			'description'       => [
 				'type'              => 'string',
 				'description'       => 'Дополнительно',
+				'default'           => '',
+				'required'          => false,
+				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
+				'validate_callback' => [ $this, 'validateArgs' ]
+			],
+			'purpose'           => [
+				'type'              => 'string',
+				'description'       => 'Цель занятий',
+				'default'           => '',
+				'required'          => false,
+				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
+				'validate_callback' => [ $this, 'validateArgs' ]
+			],
+			'selectedProfileId' => [
+				'type'              => 'integer',
+				'description'       => 'Выбранный профиль',
 				'default'           => '',
 				'required'          => false,
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
@@ -197,43 +162,35 @@ class Profile extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function create_item( $request ) {
-		/*
-		 * Mock user id
-		 */
-		$userId = 1;
 
 		$args = [
-			'ownerUserId'    => $userId,
-			'firstName'      => $request->get_param( 'firstName' ),
-			'middleName'     => $request->get_param( 'middleName' ),
-			'lastName'       => $request->get_param( 'lastName' ),
-			'email'          => $request->get_param( 'email' ),
-			'phone'          => $request->get_param( 'phone' ),
-			'area'           => $request->get_param( 'area' ),
-			'education'      => $request->get_param( 'education' ),
-			'description'    => $request->get_param( 'description' ),
-			'birthYear'      => $request->get_param( 'birthYear' ),
-			'hourlyRate'     => $request->get_param( 'hourlyRate' ),
-			'experience'     => $request->get_param( 'experience' ),
-			'cityTermId'     => $request->get_param( 'city' ),
-			'genderTermId'   => $request->get_param( 'gender' ),
-			'metroTermId'    => $request->get_param( 'metro' ),
-			'statusTermId'   => $request->get_param( 'status' ),
-			'placeTermIds'   => $request->get_param( 'place' ),
-			'subjectTermIds' => $request->get_param( 'subject' ),
-			'studentTermIds' => $request->get_param( 'student' ),
+			'firstName'         => $request->get_param( 'firstName' ),
+			'lastName'          => $request->get_param( 'lastName' ),
+			'email'             => $request->get_param( 'email' ),
+			'phone'             => $request->get_param( 'phone' ),
+			'area'              => $request->get_param( 'area' ),
+			'purpose'           => $request->get_param( 'purpose' ),
+			'description'       => $request->get_param( 'description' ),
+			'hourlyRate'        => $request->get_param( 'hourlyRate' ),
+			'cityTermId'        => $request->get_param( 'city' ),
+			'genderTermId'      => $request->get_param( 'gender' ),
+			'metroTermId'       => $request->get_param( 'metro' ),
+			'placeTermId'       => $request->get_param( 'place' ),
+			'subjectTermId'     => $request->get_param( 'subject' ),
+			'studentTermId'     => $request->get_param( 'student' ),
+			'selectedProfileId' => $request->get_param( 'selectedProfileId' ),
 		];
 
 
-		$newProfileId = createProfile( $userId, $args, true );
+		$newVacancyId = createVacancy( $args, true );
 
-		if ( is_wp_error( $newProfileId ) ) {
-			return $newProfileId;
+		if ( is_wp_error( $newVacancyId ) ) {
+			return $newVacancyId;
 		}
 
 		return rest_ensure_response( [
 			'message'   => 'success',
-			'profileId' => $newProfileId
+			'vacancyId' => $newVacancyId
 		] );
 	}
 
@@ -256,28 +213,24 @@ class Profile extends WP_REST_Controller {
 	public function sanitizeArgs( $value, $request, $param ) {
 		switch ( $param ) {
 			case 'firstName':
-			case 'middleName':
 			case 'lastName':
 			case 'area':
 			case 'phone':
 				return sanitize_text_field( $value );
 			case 'email':
 				return sanitize_email( $value );
-			case 'education':
+			case 'purpose':
 			case 'description':
 				return sanitize_textarea_field( $value );
-			case 'birthYear':
 			case 'hourlyRate':
-			case 'experience':
 			case 'metro':
 			case 'city':
-			case 'status':
+			case 'selectedProfileId':
 			case 'gender':
-				return absint( $value );
 			case 'student':
 			case 'subject':
 			case 'place':
-				return $this->sanitizeArrayOfInteger( $value );
+				return absint( $value );
 			default:
 				return $value;
 		}
@@ -316,28 +269,24 @@ class Profile extends WP_REST_Controller {
 	public function validateArgs( $value, WP_REST_Request $request, string $param ) {
 		switch ( $param ) {
 			case 'firstName':
-			case 'middleName':
 			case 'lastName':
-			case 'education':
 			case 'phone':
 				//TODO ADD PHONE REGEXP
 				return is_string( $value ) && ! empty( $value );
 			case 'email':
 				return is_email( $value ) && ! empty( $value );
-			case 'birthYear':
 			case 'hourlyRate':
-			case 'experience':
 				return ! empty( absint( $value ) );
 			case 'city':
-			case 'status':
-			case 'gender':
-				return $this->isValidTermId( $value, $param );
-			case 'metro':
-				return empty( absint( $value ) ) ? true : $this->isValidTermId( $value, $param );
 			case 'student':
 			case 'subject':
+				return $this->isValidTermId( $value, $param );
 			case 'place':
-				return $this->isValidTermIds( $value, $param );
+			case 'gender':
+			case 'metro':
+				return empty( absint( $value ) ) ? true : $this->isValidTermId( $value, $param );
+			case 'selectedProfileId':
+				return empty( absint( $value ) ) ? true : ( get_post_type( $value ) === EXCELLENT_EXAM_CORE_PREFIX . 'profile' );
 			default:
 				return true;
 		}
@@ -355,25 +304,5 @@ class Profile extends WP_REST_Controller {
 			'hide_empty' => false,
 			'taxonomy'   => EXCELLENT_EXAM_CORE_PREFIX . $param
 		] ), true );
-	}
-
-	public function isValidTermIds( $values, $param ): bool {
-		if ( ! is_array( $values ) || empty( $values ) ) {
-			return false;
-		}
-
-		$termIds = get_terms( [
-			'fields'     => 'ids',
-			'hide_empty' => false,
-			'taxonomy'   => EXCELLENT_EXAM_CORE_PREFIX . $param
-		] );
-
-		foreach ( $values as $value ) {
-			if ( ! in_array( absint( $value ), $termIds, true ) ) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 }

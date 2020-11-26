@@ -184,7 +184,7 @@ function createProfile( $userId, $metaArgs, $wpError = false ) {
  * @return bool
  */
 function userIsExists( $userId ) {
-	return ! (get_userdata( absint( $userId ) ) === false );
+	return ! ( get_userdata( absint( $userId ) ) === false );
 }
 
 if ( ! function_exists( 'setProfileAvatar' ) ) {
@@ -335,5 +335,86 @@ if ( ! function_exists( 'normalizeMultipleFileUpload' ) ) {
 		}
 
 		return $output;
+	}
+}
+
+if ( ! function_exists( 'createVacancy' ) ) {
+	/**
+	 * Create vacancy
+	 *
+	 * @param array $metaArgs Meta inputs args
+	 * @param bool $wpError Возвращать ошибку в случае неудачи
+	 *
+	 * @return int|bool|WP_Error Return Profile Id on success or False or WP_Error on failure
+	 */
+	function createVacancy( $metaArgs, $wpError = false ) {
+		$errors = [];
+
+		$requiredFields = [
+			'firstName',
+			'lastName',
+			'email',
+			'phone',
+			'cityTermId',
+			'placeTermId',
+			'subjectTermId',
+			'studentTermId',
+		];
+
+		$uuid = Uuid::uuid4();
+
+		$defaultMetaArgs = [
+			'uuid'                => $uuid->toString(),
+			'firstName'           => '',
+			'lastName'            => '',
+			'email'               => '',
+			'phone'               => '',
+			'area'                => '',
+			'description'         => '',
+			'purpose'             => '',
+			'hourlyRate'          => 0,
+			'cityTermId'          => 0,
+			'genderTermId'        => 0,
+			'metroTermId'         => 0,
+			'selectedProfileId'   => 0,
+			'executorProfileId'   => 0,
+			'candidateProfileIds' => [],
+			'placeTermId'         => 0,
+			'subjectTermId'       => 0,
+			'studentTermId'       => 0,
+		];
+
+		$args = wp_parse_args( $metaArgs, $defaultMetaArgs );
+
+		/*
+		 * Check required fields
+		 */
+		foreach ( $requiredFields as $fieldName ) {
+			if ( empty( $args[ $fieldName ] ) ) {
+				$errors[ $fieldName ] = $fieldName . ' is required';
+			}
+		}
+
+		/*
+		 * if errors return WP_Error
+		 */
+		if ( ! empty( $errors ) ) {
+			if ( $wpError ) {
+				return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Отсутсвуют следующие обязательные поля', $errors );
+			}
+
+			return false;
+
+		}
+
+		$defaultArgs = [
+			'post_title'  => get_term($args['subjectTermId'])->name . ': ' . $args['firstName'] . ' ' . $args['lastName'],
+			'post_type'   => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'post_status' => 'pending',
+		];
+
+		return wp_insert_post( wp_parse_args( [
+			'meta_input'  => $args,
+		], $defaultArgs ), $wpError );
 	}
 }
