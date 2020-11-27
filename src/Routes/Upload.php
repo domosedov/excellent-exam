@@ -64,7 +64,7 @@ class Upload {
 	 */
 	public function uploadProfileFiles( WP_REST_Request $request ) {
 
-		$profileId = postIsExists( $request->get_param( 'profileId' ) ) ? (int) $request->get_param( 'profileId' ) : 0;
+		$profileId = entityIsExists( $request->get_param( 'profileId' ), EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) ? (int) $request->get_param( 'profileId' ) : 0;
 
 		if ( empty( $profileId ) ) {
 			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Профиль не существует' );

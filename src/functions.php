@@ -199,7 +199,7 @@ if ( ! function_exists( 'setProfileAvatar' ) ) {
 	 * @return bool|WP_Error Возвращет true в случае успеха или WP_Error при неудаче
 	 */
 	function setProfileAvatar( $profileId, $imageAttachmentId, $wpError = false ) {
-		if ( postIsExists( $profileId ) && postIsExists( $imageAttachmentId ) ) {
+		if ( entityIsExists( $profileId, EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) && entityIsExists( $imageAttachmentId, 'attachment' ) ) {
 			if ( ! update_metadata( 'post', absint( $profileId ), 'avatarAttachmentId', absint( $imageAttachmentId ) ) ) {
 				if ( $wpError ) {
 					return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось установить avatarAttachmentId', [
@@ -239,7 +239,7 @@ if ( ! function_exists( 'setProfileDocuments' ) ) {
 	 * @return bool|WP_Error Возвращет true в случае успеха или WP_Error при неудаче
 	 */
 	function setProfileDocuments( int $profileId, array $imageAttachmentIds, $wpError = false ) {
-		if ( postIsExists( $profileId ) && entitiesIsExists( $imageAttachmentIds, 'attachment' ) ) {
+		if ( entityIsExists( $profileId, EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) && entitiesIsExists( $imageAttachmentIds, 'attachment' ) ) {
 			if ( ! update_metadata( 'post', absint( $profileId ), 'documentAttachmentIds', $imageAttachmentIds ) ) {
 				if ( $wpError ) {
 					return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось установить documentAttachmentIds', [
@@ -268,20 +268,40 @@ if ( ! function_exists( 'setProfileDocuments' ) ) {
 	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию setProfileAvatar' );
 }
 
-if ( ! function_exists( 'postIsExists' ) ) {
+if ( ! function_exists( 'entityIsExists' ) ) {
 	/**
 	 * @param int $id {Post Type Object} Id
 	 *
 	 * @return bool
 	 */
-	function postIsExists( $id ) {
-		return get_post( absint( $id ) ) ? true : false;
+	function entityIsExists( $id, $postType ) {
+		global $wpdb;
+
+		$id = absint( $id );
+		/*
+		 * Check post_type
+		 */
+		$validPostType = in_array( 'eec_vacancy', get_post_types(), true );
+
+		if ( ! empty( $id ) && $validPostType ) {
+
+			$result = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT post_status FROM $wpdb->posts WHERE ID = %d AND post_type = %s",
+					$id, $postType
+				)
+			);
+
+			return ! is_null( $result );
+		}
+
+		return false;
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию postIsExists' );
+	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию entityIsExists' );
 }
 
-if ( ! function_exists( 'postsIsExists' ) ) {
+if ( ! function_exists( 'entitiesIsExists' ) ) {
 	/**
 	 * @param int[] $entityIds {Post Type Object} Id
 	 *
@@ -316,7 +336,7 @@ if ( ! function_exists( 'postsIsExists' ) ) {
 		return true;
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию postIsExists' );
+	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию entitiesIsExists' );
 }
 
 if ( ! function_exists( 'normalizeMultipleFileUpload' ) ) {
@@ -382,6 +402,10 @@ if ( ! function_exists( 'createVacancy' ) ) {
 			'placeTermId'         => 0,
 			'subjectTermId'       => 0,
 			'studentTermId'       => 0,
+			'lessonIsScheduled'   => false,
+			'lessonIsCompleted'   => false,
+			'isCompleted'         => false,
+			'confirmIsRequired'   => false,
 		];
 
 		$args = wp_parse_args( $metaArgs, $defaultMetaArgs );
@@ -408,13 +432,192 @@ if ( ! function_exists( 'createVacancy' ) ) {
 		}
 
 		$defaultArgs = [
-			'post_title'  => get_term($args['subjectTermId'])->name . ': ' . $args['firstName'] . ' ' . $args['lastName'],
+			'post_title'  => get_term( $args['subjectTermId'] )->name . ': ' . $args['firstName'] . ' ' . $args['lastName'],
 			'post_type'   => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
 			'post_status' => 'pending',
 		];
 
 		return wp_insert_post( wp_parse_args( [
-			'meta_input'  => $args,
+			'meta_input' => $args,
 		], $defaultArgs ), $wpError );
 	}
 }
+
+if ( ! function_exists( 'getUserProfileId' ) ) {
+	/**
+	 * Возвращает ID профиля
+	 *
+	 * @param WP_User|int $user Объект пользователя или его ID
+	 *
+	 * @return int
+	 */
+	function getUserProfileId( $user ) {
+		$userId = 0;
+
+		if ( $user instanceof WP_User ) {
+			$userId = $user->ID;
+		} elseif ( is_numeric( $user ) && ! empty( absint( $user ) ) ) {
+			$userId = (int) $user;
+		}
+
+		global $wpdb;
+
+		$profileId = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %d ORDER BY meta_id DESC",
+				'ownerUserId', $userId
+			)
+		);
+
+		if ( ! empty( $profileId ) ) {
+			return (int) $profileId;
+		}
+
+		return 0;
+	}
+} else {
+	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию getUserProfileId' );
+}
+
+if ( ! function_exists( 'getImageUrls' ) ) {
+	/**
+	 * Получает ассоциативный массив изображения
+	 *
+	 * @param int|string $imageId
+	 *
+	 * @return array Image URLs
+	 */
+	function getImageUrls( $imageId ) {
+		$imageId = absint( $imageId );
+
+		if ( entityIsExists( $imageId, 'attachment' ) ) {
+			return [
+				'thumbnail' => wp_get_attachment_image_url( 56, 'thumbnail' ),
+				'medium'    => wp_get_attachment_image_url( 56, 'medium' ),
+				'large'     => wp_get_attachment_image_url( 56, 'large' ),
+			];
+		}
+
+		return [];
+	}
+} else {
+	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию getImageUrls' );
+}
+
+function normalizeDate( $date ) {
+	return date( 'd.m.Y', strtotime( $date ) );
+}
+
+if ( ! function_exists( 'getProfile' ) ) {
+	function getProfile( $profileId ) {
+		global $wpdb;
+		$output = [];
+		if ( entityIsExists( $profileId, EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) ) {
+
+
+			$profile = get_post( $profileId );
+
+			$profileMeta = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT meta_key, meta_value as 'value' FROM $wpdb->postmeta WHERE post_id = %d",
+					$profileId
+				),
+				OBJECT_K
+			);
+
+			$output['id']         = $profile->ID;
+			$output['authorId']   = (int) $profile->post_author;
+			$output['postStatus'] = $profile->post_status;
+			$output['created']    = normalizeDate( $profile->post_date );
+			$output['modified']   = normalizeDate( $profile->post_modified );
+
+			$output['uuid']        = $profileMeta['uuid']->value ?? '';
+			$output['firstName']   = $profileMeta['firstName']->value ?? '';
+			$output['middleName']  = $profileMeta['middleName']->value ?? '';
+			$output['lastName']    = $profileMeta['lastName']->value ?? '';
+			$output['email']       = $profileMeta['email']->value ?? '';
+			$output['phone']       = $profileMeta['phone']->value ?? '';
+			$output['area']        = $profileMeta['area']->value ?? '';
+			$output['education']   = $profileMeta['education']->value ?? '';
+			$output['description'] = $profileMeta['description']->value ?? '';
+			$output['ownerUserId'] = ! empty( $profileMeta['ownerUserId'] ) ? (int) $profileMeta['ownerUserId']->value : 0;
+			$output['birthYear']   = ! empty( $profileMeta['birthYear'] ) ? (int) $profileMeta['birthYear']->value : 0;
+			$output['hourlyRate']  = ! empty( $profileMeta['hourlyRate'] ) ? (int) $profileMeta['hourlyRate']->value : 0;
+			$output['experience']  = ! empty( $profileMeta['experience'] ) ? (int) $profileMeta['experience']->value : 0;
+
+			$output['city']   = ! empty( $profileMeta['cityTermId'] ) ? getTermName( $profileMeta['cityTermId']->value ) : '';
+			$output['gender'] = ! empty( $profileMeta['genderTermId'] ) ? getTermName( $profileMeta['genderTermId']->value ) : '';
+			$output['metro']  = ! empty( $profileMeta['metroTermId'] ) ? getTermName( $profileMeta['metroTermId']->value ) : '';
+			$output['status'] = ! empty( $profileMeta['statusTermId'] ) ? getTermName( $profileMeta['statusTermId']->value ) : '';
+
+			$output['places']   = ( ! empty( $profileMeta['placeTermIds'] ) && is_serialized( $profileMeta['placeTermIds']->value ) ) ?
+				getTermNames( maybe_unserialize( $profileMeta['placeTermIds']->value ) ) : '';
+			$output['subjects'] = ( ! empty( $profileMeta['subjectTermIds'] ) && is_serialized( $profileMeta['subjectTermIds']->value ) ) ?
+				getTermNames( maybe_unserialize( $profileMeta['subjectTermIds']->value ) ) : '';
+			$output['students'] = ( ! empty( $profileMeta['studentTermIds'] ) && is_serialized( $profileMeta['studentTermIds']->value ) ) ?
+				getTermNames( maybe_unserialize( $profileMeta['studentTermIds']->value ) ) : '';
+			$output['marks']    = ( ! empty( $profileMeta['markTermIds'] ) && is_serialized( $profileMeta['markTermIds']->value ) ) ?
+				getTermNames( maybe_unserialize( $profileMeta['markTermIds']->value ) ) : '';
+
+			//TODO If empty return placeholder avatar
+			$output['avatar'] = ! empty( $profileMeta['avatarAttachmentId'] ) ? getImageUrls( $profileMeta['avatarAttachmentId']->value ) : [];
+
+			$output['documents'] = ( ! empty( $profileMeta['documentAttachmentIds'] ) && is_serialized( $profileMeta['documentAttachmentIds']->value ) ) ?
+				array_map( static function ( $imageId ) {
+					return getImageUrls( $imageId );
+				}, maybe_unserialize( $profileMeta['documentAttachmentIds']->value ) ) : [];
+		}
+
+		return $output;
+	}
+}
+
+/**
+ * @param int|string $termId
+ *
+ * @return string Term Name
+ */
+function getTermName( $termId ) {
+	global $wpdb;
+
+	$result = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT name FROM $wpdb->terms WHERE term_id = %d",
+			absint( $termId )
+		)
+	);
+
+	if ( ! empty( $result ) ) {
+		return $result;
+	}
+
+	return '';
+}
+
+/**
+ * @param int[] $termIds
+ *
+ * @return string
+ */
+function getTermNames( $termIds ) {
+	global $wpdb;
+
+	if ( empty( $termIds ) || ! is_array( $termIds ) ) {
+		return '';
+	}
+
+	$terms = implode( ', ', $termIds );
+
+	$result = $wpdb->get_results(
+		"SELECT term_id, name FROM $wpdb->terms WHERE term_id IN ( " . $terms . ")", OBJECT_K
+	);
+
+	if ( ! empty( $result ) ) {
+		return implode( ', ', array_map( static function ( $term ) {
+			return $term->name;
+		}, $result ) );
+	}
+
+	return '';
+}
+

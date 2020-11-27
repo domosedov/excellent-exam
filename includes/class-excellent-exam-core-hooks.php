@@ -1526,7 +1526,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Selected Profile Id
 		 */
 		$selectedProfileIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1544,7 +1544,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Executor Profile Id
 		 */
 		$executorProfileIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1562,7 +1562,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Candidate Profile Ids
 		 */
 		$candidateProfileIdsArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
 			'type'              => 'array',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1574,6 +1574,82 @@ class Excellent_Exam_Core_Hooks {
 
 		if ( ! $candidateProfileIds ) {
 			$errors['executorProfileId'] = 'Не удалось зарегистрировать мета-поле candidateProfileIds';
+		}
+
+		/*
+		 * Boolean fields
+		 */
+
+		/*
+		 * First Lesson is scheduled
+		 */
+		$lessonIsScheduledArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'boolean',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => false,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$lessonIsScheduled = register_meta( $objectType, 'lessonIsScheduled', $lessonIsScheduledArgs );
+
+		if ( ! $lessonIsScheduled ) {
+			$errors['lessonIsScheduled'] = 'Не удалось зарегистрировать мета-поле lessonIsScheduled';
+		}
+
+		/*
+		 * First Lesson is completed
+		 */
+		$lessonIsCompletedArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'boolean',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => false,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$lessonIsCompleted = register_meta( $objectType, 'lessonIsCompleted', $lessonIsCompletedArgs );
+
+		if ( ! $lessonIsCompleted ) {
+			$errors['lessonIsCompleted'] = 'Не удалось зарегистрировать мета-поле lessonIsCompleted';
+		}
+
+		/*
+		 * Vacancy is completed
+		 */
+		$isCompletedArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'boolean',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => false,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$isCompleted = register_meta( $objectType, 'isCompleted', $isCompletedArgs );
+
+		if ( ! $isCompleted ) {
+			$errors['isCompleted'] = 'Не удалось зарегистрировать мета-поле isCompleted';
+		}
+
+		/*
+		 * Vacancy is completed
+		 */
+		$confirmIsRequiredArgs = [
+			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'type'              => 'boolean',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'default'           => false,
+			'sanitize_callback' => [ $this, 'sanitizeMeta' ]
+		];
+
+		$confirmIsRequired = register_meta( $objectType, 'confirmIsRequired', $confirmIsRequiredArgs );
+
+		if ( ! $confirmIsRequired ) {
+			$errors['confirmIsRequired'] = 'Не удалось зарегистрировать мета-поле confirmIsRequired';
 		}
 
 		if ( ! empty( $errors ) ) {
