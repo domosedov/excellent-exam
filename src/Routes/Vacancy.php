@@ -5,6 +5,7 @@ namespace Domosed\EEC\Routes;
 
 
 use WP_Error;
+use WP_Query;
 use WP_REST_Controller;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -27,6 +28,12 @@ class Vacancy extends WP_REST_Controller {
 				'callback'            => array( $this, 'create_item' ),
 				'permission_callback' => array( $this, 'create_item_permissions_check' ),
 				'args'                => $this->getCreateVacancyArgs()
+			],
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_items' ),
+				'permission_callback' => array( $this, 'get_items_permissions_check' ),
+//				'args'                => $this->getCreateVacancyArgs()
 			]
 		] );
 	}
@@ -304,5 +311,30 @@ class Vacancy extends WP_REST_Controller {
 			'hide_empty' => false,
 			'taxonomy'   => EXCELLENT_EXAM_CORE_PREFIX . $param
 		] ), true );
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return void|WP_Error|WP_REST_Response
+	 */
+	public function get_items( $request ) {
+		$args = [
+			'post_type'   => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'post_status' => 'any',
+			'fields'      => 'ids'
+		];
+
+		$query = new WP_Query( $args );
+
+		$result = $query->get_posts();
+
+		return rest_ensure_response( array_map( static function ( $vacancyId ) {
+			return getVacancy( $vacancyId );
+		}, $result ) );
+	}
+
+	public function get_items_permissions_check( $request ) {
+		return true;
 	}
 }

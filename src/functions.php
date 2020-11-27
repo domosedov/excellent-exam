@@ -570,6 +570,66 @@ if ( ! function_exists( 'getProfile' ) ) {
 
 		return $output;
 	}
+} else {
+	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию getProfile' );
+}
+
+if ( ! function_exists( 'getVacancy' ) ) {
+	function getVacancy( $vacancyId ) {
+		global $wpdb;
+		$output = [];
+
+		if ( entityIsExists( $vacancyId, EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ) ) {
+
+
+			$vacancy = get_post( $vacancyId );
+
+			$vacancyMeta = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT meta_key, meta_value as 'value' FROM $wpdb->postmeta WHERE post_id = %d",
+					$vacancyId
+				),
+				OBJECT_K
+			);
+
+			$output['id']         = $vacancy->ID;
+			$output['postStatus'] = $vacancy->post_status;
+			$output['created']    = normalizeDate( $vacancy->post_date );
+			$output['modified']   = normalizeDate( $vacancy->post_modified );
+
+			$output['uuid']        = $vacancyMeta['uuid']->value ?? '';
+			$output['firstName']   = $vacancyMeta['firstName']->value ?? '';
+			$output['lastName']    = $vacancyMeta['lastName']->value ?? '';
+			$output['email']       = $vacancyMeta['email']->value ?? '';
+			$output['phone']       = $vacancyMeta['phone']->value ?? '';
+			$output['area']        = $vacancyMeta['area']->value ?? '';
+			$output['description'] = $vacancyMeta['description']->value ?? '';
+			$output['purpose']     = $vacancyMeta['purpose']->value ?? '';
+			$output['hourlyRate']  = ! empty( $vacancyMeta['hourlyRate'] ) ? (int) $vacancyMeta['hourlyRate']->value : 0;
+
+			$output['city']        = ! empty( $vacancyMeta['cityTermId'] ) ? getTermName( $vacancyMeta['cityTermId']->value ) : '';
+			$output['gender']      = ! empty( $vacancyMeta['genderTermId'] ) ? getTermName( $vacancyMeta['genderTermId']->value ) : '';
+			$output['metro']       = ! empty( $vacancyMeta['metroTermId'] ) ? getTermName( $vacancyMeta['metroTermId']->value ) : '';
+			$output['place']       = ! empty( $vacancyMeta['placeTermId'] ) ? getTermName( $vacancyMeta['placeTermId']->value ) : '';
+			$output['subject']     = ! empty( $vacancyMeta['subjectTermId'] ) ? getTermName( $vacancyMeta['subjectTermId']->value ) : '';
+			$output['studentTerm'] = ! empty( $vacancyMeta['studentTermId'] ) ? getTermName( $vacancyMeta['studentTermId']->value ) : '';
+
+			$output['selectedProfileId']   = ! empty( $vacancyMeta['selectedProfileId'] ) ? (int) $vacancyMeta['selectedProfileId']->value : 0;
+			$output['executorProfileId']   = ! empty( $vacancyMeta['executorProfileId'] ) ? (int) $vacancyMeta['executorProfileId']->value : 0;
+			$output['candidateProfileIds'] = ( ! empty( $vacancyMeta['candidateProfileIds'] ) && is_serialized( $vacancyMeta['candidateProfileIds']->value ) ) ?
+				maybe_unserialize( $vacancyMeta['candidateProfileIds']->value ) : [];
+
+			$output['lessonIsScheduled'] = ! empty( $vacancyMeta['lessonIsScheduled'] ) ? (bool) $vacancyMeta['lessonIsScheduled']->value : false;
+			$output['lessonIsCompleted'] = ! empty( $vacancyMeta['lessonIsCompleted'] ) ? (bool) $vacancyMeta['lessonIsCompleted']->value : false;
+			$output['isCompleted']       = ! empty( $vacancyMeta['isCompleted'] ) ? (bool) $vacancyMeta['isCompleted']->value : false;
+			$output['confirmIsRequired'] = ! empty( $vacancyMeta['confirmIsRequired'] ) ? (bool) $vacancyMeta['confirmIsRequired']->value : false;
+
+		}
+
+		return $output;
+	}
+} else {
+	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию getVacancy' );
 }
 
 /**
@@ -619,5 +679,45 @@ function getTermNames( $termIds ) {
 	}
 
 	return '';
+}
+
+if ( ! function_exists( 'getProfileVacanciesBy' ) ) {
+	/**
+	 * @param string $field
+	 * @param int $profileId
+	 *
+	 * @return int[]
+	 */
+	function getProfileVacanciesBy( $field, $profileId ) {
+		$acceptedFields = [ 'selectedProfileId', 'executorProfileId' ];
+
+		if ( in_array( $field, $acceptedFields ) && entityIsExists( $profileId, EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) ) {
+			global $wpdb;
+
+			$sql = <<<SQL
+				SELECT post_id FROM $wpdb->postmeta 
+				WHERE meta_key = %s AND meta_value = %d
+			SQL;
+
+			$result = $wpdb->get_col(
+				$wpdb->prepare(
+					$sql,
+					$field, $profileId
+				)
+			);
+
+			if ( empty( $result ) ) {
+				return [];
+			}
+
+			return array_map( static function ( $item ) {
+				return (int) $item;
+			}, $result );
+		}
+
+		return [];
+	}
+} else {
+	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию getProfileVacanciesBy' );
 }
 
