@@ -10,51 +10,17 @@
  * @subpackage Excellent_Exam_Core/public
  */
 
-use Domosed\EEC\Routes\Profile;
-use Domosed\EEC\Routes\Vacancy;
-use Domosed\EEC\Routes\Upload;
+namespace Domosed\EEC;
 
-/**
- * The functionality of the plugin.
- *
- * @package    Excellent_Exam_Core
- * @subpackage Excellent_Exam_Core/public
- * @author     Aleksandr Grigorii <domosedov.dev@gmail.com>
- */
-class Excellent_Exam_Core_Hooks {
+use Domosed\EEC\Modules\Profiles\ProfilesRepository;
+use Domosed\EEC\Modules\Vacancies\VacanciesController;
+use Domosed\EEC\Modules\common\Upload;
+use Domosed\EEC\Modules\Profiles\ProfilesController;
+use Domosed\EEC\Modules\Profiles\ProfilesService;
+use WP_Error;
+use WP_Post;
 
-	/**
-	 * The ID of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string $plugin_name The ID of this plugin.
-	 */
-	private $plugin_name;
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string $version The current version of this plugin.
-	 */
-	private $version;
-
-	/**
-	 * Initialize the class and set its properties.
-	 *
-	 * @param string $plugin_name The name of the plugin.
-	 * @param string $version The version of this plugin.
-	 *
-	 * @since    1.0.0
-	 */
-	public function __construct( $plugin_name, $version ) {
-
-		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
-
-	}
+class AppHooks {
 
 	/**
 	 * Register Custom Post Types
@@ -117,7 +83,7 @@ class Excellent_Exam_Core_Hooks {
 			'supports'         => [ 'title', 'author' ]
 		];
 
-		$profileType = register_post_type( EXCELLENT_EXAM_CORE_PREFIX . 'profile', $profileArgs );
+		$profileType = register_post_type( EEC_PREFIX . 'profile', $profileArgs );
 
 		if ( is_wp_error( $profileType ) ) {
 			$errors['profile'] = 'Не удалось зарегистрировать Profile CPT';
@@ -175,7 +141,7 @@ class Excellent_Exam_Core_Hooks {
 			'supports'         => [ 'title' ]
 		];
 
-		$vacancyType = register_post_type( EXCELLENT_EXAM_CORE_PREFIX . 'vacancy', $vacancyArgs );
+		$vacancyType = register_post_type( EEC_PREFIX . 'vacancy', $vacancyArgs );
 
 		if ( is_wp_error( $vacancyType ) ) {
 			$errors['vacancy'] = 'Не удалось зарегистрировать Vacancy CPT';
@@ -233,7 +199,7 @@ class Excellent_Exam_Core_Hooks {
 			'supports'         => [ 'title', 'editor', 'author' ]
 		];
 
-		$messageType = register_post_type( EXCELLENT_EXAM_CORE_PREFIX . 'message', $messageArgs );
+		$messageType = register_post_type( EEC_PREFIX . 'message', $messageArgs );
 
 		if ( is_wp_error( $messageType ) ) {
 			$errors['message'] = 'Не удалось зарегистрировать Message CPT';
@@ -291,7 +257,7 @@ class Excellent_Exam_Core_Hooks {
 			'supports'         => [ 'title', 'editor' ]
 		];
 
-		$feedbackType = register_post_type( EXCELLENT_EXAM_CORE_PREFIX . 'feedback', $feedbackArgs );
+		$feedbackType = register_post_type( EEC_PREFIX . 'feedback', $feedbackArgs );
 
 		if ( is_wp_error( $feedbackType ) ) {
 			$errors['feedback'] = 'Не удалось зарегистрировать Feedback CPT';
@@ -301,7 +267,7 @@ class Excellent_Exam_Core_Hooks {
 		 * If errors return WP_Error
 		 */
 		if ( ! empty( $errors ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerCustomPostTypes', $errors );
+			return new WP_Error( EEC_PREFIX . 'plugin_hooks_error', 'Ошибка registerCustomPostTypes', $errors );
 		}
 	}
 
@@ -358,9 +324,9 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$metroTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'metro', [
-			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
-			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		$metroTaxonomy = register_taxonomy( EEC_PREFIX . 'metro', [
+			EEC_PREFIX . 'profile',
+			EEC_PREFIX . 'vacancy'
 		], $metroArgs );
 
 		if ( is_wp_error( $metroTaxonomy ) ) {
@@ -411,9 +377,9 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$cityTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'city', [
-			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
-			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		$cityTaxonomy = register_taxonomy( EEC_PREFIX . 'city', [
+			EEC_PREFIX . 'profile',
+			EEC_PREFIX . 'vacancy'
 		], $cityArgs );
 
 		if ( is_wp_error( $cityTaxonomy ) ) {
@@ -464,9 +430,9 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$subjectTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'subject', [
-			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
-			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		$subjectTaxonomy = register_taxonomy( EEC_PREFIX . 'subject', [
+			EEC_PREFIX . 'profile',
+			EEC_PREFIX . 'vacancy'
 		], $subjectArgs );
 
 		if ( is_wp_error( $subjectTaxonomy ) ) {
@@ -517,9 +483,9 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$studentTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'student', [
-			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
-			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		$studentTaxonomy = register_taxonomy( EEC_PREFIX . 'student', [
+			EEC_PREFIX . 'profile',
+			EEC_PREFIX . 'vacancy'
 		], $studentArgs );
 
 		if ( is_wp_error( $studentTaxonomy ) ) {
@@ -570,9 +536,9 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$placeTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'place', [
-			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
-			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		$placeTaxonomy = register_taxonomy( EEC_PREFIX . 'place', [
+			EEC_PREFIX . 'profile',
+			EEC_PREFIX . 'vacancy'
 		], $placeArgs );
 
 		if ( is_wp_error( $placeTaxonomy ) ) {
@@ -623,9 +589,9 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$genderTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'gender', [
-			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
-			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		$genderTaxonomy = register_taxonomy( EEC_PREFIX . 'gender', [
+			EEC_PREFIX . 'profile',
+			EEC_PREFIX . 'vacancy'
 		], $genderArgs );
 
 		if ( is_wp_error( $genderTaxonomy ) ) {
@@ -676,9 +642,9 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$statusTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'status', [
-			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
-			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		$statusTaxonomy = register_taxonomy( EEC_PREFIX . 'status', [
+			EEC_PREFIX . 'profile',
+			EEC_PREFIX . 'vacancy'
 		], $statusArgs );
 
 		if ( is_wp_error( $statusTaxonomy ) ) {
@@ -729,9 +695,9 @@ class Excellent_Exam_Core_Hooks {
 			]
 		];
 
-		$markTaxonomy = register_taxonomy( EXCELLENT_EXAM_CORE_PREFIX . 'mark', [
-			EXCELLENT_EXAM_CORE_PREFIX . 'profile',
-			EXCELLENT_EXAM_CORE_PREFIX . 'vacancy'
+		$markTaxonomy = register_taxonomy( EEC_PREFIX . 'mark', [
+			EEC_PREFIX . 'profile',
+			EEC_PREFIX . 'vacancy'
 		], $markArgs );
 
 		if ( is_wp_error( $markTaxonomy ) ) {
@@ -742,7 +708,7 @@ class Excellent_Exam_Core_Hooks {
 		 * If errors return WP_Error
 		 */
 		if ( ! empty( $errors ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerCustomTaxonomies', $errors );
+			return new WP_Error( EEC_PREFIX . 'plugin_hooks_error', 'Ошибка registerCustomTaxonomies', $errors );
 		}
 	}
 
@@ -765,7 +731,7 @@ class Excellent_Exam_Core_Hooks {
 	private function registerProfileMeta() {
 		$errors = [];
 
-		$objectType = EXCELLENT_EXAM_CORE_PREFIX . 'profile';
+		$objectType = EEC_PREFIX . 'profile';
 
 		/*
 		 * Text fields
@@ -775,7 +741,7 @@ class Excellent_Exam_Core_Hooks {
 		 * uuid
 		 */
 		$uuidArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -793,7 +759,7 @@ class Excellent_Exam_Core_Hooks {
 		 * First Name
 		 */
 		$firstNameArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -811,7 +777,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Middle Name
 		 */
 		$middleNameArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -829,7 +795,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Last Name
 		 */
 		$lastNameArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -847,7 +813,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Email
 		 */
 		$emailArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -862,14 +828,14 @@ class Excellent_Exam_Core_Hooks {
 		}
 
 		if ( ! empty( $errors ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
+			return new WP_Error( EEC_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
 		}
 
 		/*
 		 * Phone
 		 */
 		$phoneArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -887,7 +853,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Area
 		 */
 		$areaArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -905,7 +871,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Education
 		 */
 		$educationArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -923,7 +889,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Description
 		 */
 		$descriptionArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -945,7 +911,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Birth Year
 		 */
 		$birthYearArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -963,7 +929,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Hourly rate
 		 */
 		$hourlyRateArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -981,7 +947,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Experience
 		 */
 		$experienceArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1003,7 +969,7 @@ class Excellent_Exam_Core_Hooks {
 		 * City term Id
 		 */
 		$cityTermIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1021,7 +987,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Metro term Id
 		 */
 		$metroTermIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1039,7 +1005,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Status term Id
 		 */
 		$statusTermIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1057,7 +1023,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Gender term Id
 		 */
 		$genderTermIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1075,7 +1041,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Place term Ids
 		 */
 		$placeTermIdsArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'array',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1093,7 +1059,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Subject term Ids
 		 */
 		$subjectTermIdsArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'array',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1111,7 +1077,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Students term Ids
 		 */
 		$studentTermIdsArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'array',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1129,7 +1095,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Marks term Ids
 		 */
 		$markTermIdsArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'array',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1151,7 +1117,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Owner Id
 		 */
 		$ownerUserIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1169,7 +1135,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Avatar Attachment Id
 		 */
 		$avatarAttachmentIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1187,7 +1153,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Document Attachment Ids
 		 */
 		$documentAttachmentIdsArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'array',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1205,7 +1171,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Feedback Attachment Ids
 		 */
 		$feedbackIdsArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+			'object_subtype'    => EEC_PREFIX . 'profile',
 			'type'              => 'array',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1220,7 +1186,7 @@ class Excellent_Exam_Core_Hooks {
 		}
 
 		if ( ! empty( $errors ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
+			return new WP_Error( EEC_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
 		}
 	}
 
@@ -1230,7 +1196,7 @@ class Excellent_Exam_Core_Hooks {
 	private function registerVacancyMeta() {
 		$errors = [];
 
-		$objectType = EXCELLENT_EXAM_CORE_PREFIX . 'vacancy';
+		$objectType = EEC_PREFIX . 'vacancy';
 
 		/*
 		 * Text fields
@@ -1240,7 +1206,7 @@ class Excellent_Exam_Core_Hooks {
 		 * uuid
 		 */
 		$uuidArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1258,7 +1224,7 @@ class Excellent_Exam_Core_Hooks {
 		 * First Name
 		 */
 		$firstNameArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1276,7 +1242,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Last Name
 		 */
 		$lastNameArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1294,7 +1260,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Email
 		 */
 		$emailArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1309,14 +1275,14 @@ class Excellent_Exam_Core_Hooks {
 		}
 
 		if ( ! empty( $errors ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
+			return new WP_Error( EEC_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
 		}
 
 		/*
 		 * Phone
 		 */
 		$phoneArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1334,7 +1300,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Area
 		 */
 		$areaArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1352,7 +1318,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Purpose
 		 */
 		$purposeArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1370,7 +1336,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Description
 		 */
 		$descriptionArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'string',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1392,7 +1358,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Hourly rate
 		 */
 		$hourlyRateArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1414,7 +1380,7 @@ class Excellent_Exam_Core_Hooks {
 		 * City term Id
 		 */
 		$cityTermIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1432,7 +1398,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Metro term Id
 		 */
 		$metroTermIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1450,7 +1416,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Gender term Id
 		 */
 		$genderTermIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1468,7 +1434,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Place term Id
 		 */
 		$placeTermIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1486,7 +1452,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Subject term Id
 		 */
 		$subjectTermIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1504,7 +1470,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Student term Id
 		 */
 		$studentTermIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1526,7 +1492,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Selected Profile Id
 		 */
 		$selectedProfileIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1544,7 +1510,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Executor Profile Id
 		 */
 		$executorProfileIdArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'integer',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1562,7 +1528,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Candidate Profile Ids
 		 */
 		$candidateProfileIdsArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'array',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1584,7 +1550,7 @@ class Excellent_Exam_Core_Hooks {
 		 * First Lesson is scheduled
 		 */
 		$lessonIsScheduledArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'boolean',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1602,7 +1568,7 @@ class Excellent_Exam_Core_Hooks {
 		 * First Lesson is completed
 		 */
 		$lessonIsCompletedArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'boolean',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1620,7 +1586,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Vacancy is completed
 		 */
 		$isCompletedArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'boolean',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1638,7 +1604,7 @@ class Excellent_Exam_Core_Hooks {
 		 * Vacancy is completed
 		 */
 		$confirmIsRequiredArgs = [
-			'object_subtype'    => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'object_subtype'    => EEC_PREFIX . 'vacancy',
 			'type'              => 'boolean',
 			'single'            => true,
 			'show_in_rest'      => false,
@@ -1653,7 +1619,7 @@ class Excellent_Exam_Core_Hooks {
 		}
 
 		if ( ! empty( $errors ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
+			return new WP_Error( EEC_PREFIX . 'plugin_hooks_error', 'Ошибка registerProfileMeta', $errors );
 		}
 	}
 
@@ -1664,7 +1630,7 @@ class Excellent_Exam_Core_Hooks {
 		$errors = [];
 
 		if ( ! empty( $errors ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerMessageMeta', $errors );
+			return new WP_Error( EEC_PREFIX . 'plugin_hooks_error', 'Ошибка registerMessageMeta', $errors );
 		}
 	}
 
@@ -1675,7 +1641,7 @@ class Excellent_Exam_Core_Hooks {
 		$errors = [];
 
 		if ( ! empty( $errors ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'plugin_hooks_error', 'Ошибка registerFeedbackMeta', $errors );
+			return new WP_Error( EEC_PREFIX . 'plugin_hooks_error', 'Ошибка registerFeedbackMeta', $errors );
 		}
 	}
 
@@ -1689,10 +1655,15 @@ class Excellent_Exam_Core_Hooks {
 	 * @return void
 	 */
 	public function registerCustomRoutes(): void {
-		$profileRoute = new Profile();
-		$profileRoute->register_routes();
+		$authService = new Modules\Auth\AuthService();
 
-		$vacancyRoute = new Vacancy();
+		$profilesRepository = new ProfilesRepository();
+		$profilesService    = new ProfilesService( $profilesRepository, $authService );
+
+		$profileController = new ProfilesController( $profilesService );
+		$profileController->register_routes();
+
+		$vacancyRoute = new VacanciesController();
 		$vacancyRoute->register_routes();
 
 		$uploadRoute = new Upload();
@@ -1712,7 +1683,7 @@ class Excellent_Exam_Core_Hooks {
 		 * При удалении изображения проверяем не является ли оно аватаром или документов профиля,
 		 * если да, то обновляем мета-данные
 		 */
-		if ( ! empty( $post->post_parent ) && get_post_type( $post->post_parent ) === EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) {
+		if ( ! empty( $post->post_parent ) && get_post_type( $post->post_parent ) === EEC_PREFIX . 'profile' ) {
 			$profileAvatarId    = absint( get_post_meta( $post->post_parent, 'avatarAttachmentId', true ) );
 			$profileDocumentIds = get_post_meta( $post->post_parent, 'documentAttachmentIds', true );
 			if ( $attachmentId === $profileAvatarId ) {
@@ -1741,14 +1712,14 @@ class Excellent_Exam_Core_Hooks {
 	 */
 	public function generateUniquePostSlug( $overrideSlug, $slug, $postId, $postStatus, $postType, $postParent ) {
 		switch ( $postType ) {
-			case EXCELLENT_EXAM_CORE_PREFIX . 'profile':
+			case EEC_PREFIX . 'profile':
 				$uuid = get_post_meta( $postId, 'uuid', true );
 				if ( empty( $uuid ) ) {
 					$uuid = current_time( 'timestamp' );
 				}
 
 				return 'profile-' . $uuid;
-			case EXCELLENT_EXAM_CORE_PREFIX . 'vacancy':
+			case EEC_PREFIX . 'vacancy':
 				$uuid = get_post_meta( $postId, 'uuid', true );
 				if ( empty( $uuid ) ) {
 					$uuid = current_time( 'timestamp' );

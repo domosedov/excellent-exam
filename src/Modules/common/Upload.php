@@ -1,7 +1,8 @@
 <?php
 
 
-namespace Domosed\EEC\Routes;
+namespace Domosed\EEC\Modules\common;
+
 
 
 use WP_Error;
@@ -22,7 +23,7 @@ class Upload {
 	private $rest_base;
 
 	public function __construct() {
-		$this->namespace = EXCELLENT_EXAM_CORE_API_NAMESPACE;
+		$this->namespace = EEC_API_NAMESPACE;
 		$this->rest_base = 'upload';
 	}
 
@@ -64,10 +65,10 @@ class Upload {
 	 */
 	public function uploadProfileFiles( WP_REST_Request $request ) {
 
-		$profileId = entityIsExists( $request->get_param( 'profileId' ), EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) ? (int) $request->get_param( 'profileId' ) : 0;
+		$profileId = entityIsExists( $request->get_param( 'profileId' ), EEC_PREFIX . 'profile' ) ? (int) $request->get_param( 'profileId' ) : 0;
 
 		if ( empty( $profileId ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Профиль не существует' );
+			return new WP_Error( EEC_PREFIX . 'route_error', 'Профиль не существует' );
 		}
 
 		$avatar    = $request->get_file_params()['avatar'];
@@ -76,7 +77,7 @@ class Upload {
 		$response = [ 'message' => 'success' ];
 
 		if ( empty( $documents ) && empty( $avatar ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Empty Files' );
+			return new WP_Error( EEC_PREFIX . 'route_error', 'Empty Files' );
 		}
 
 		if ( ! empty( $avatar ) ) {
@@ -132,7 +133,7 @@ class Upload {
 
 				$documentIds[] = $documentId;
 				if ( empty( $documentIds ) ) {
-					return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Invalid images' );
+					return new WP_Error( EEC_PREFIX . 'route_error', 'Invalid images' );
 				}
 				$documentsIsSet = setProfileDocuments( $profileId, $documentIds, true );
 				if ( is_wp_error( $documentsIsSet ) ) {
@@ -155,11 +156,11 @@ class Upload {
 	 */
 	public function validateFile( $file ) {
 		if ( ! in_array( $file['type'], self::ACCEPTED_FILE_TYPES, true ) ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Invalid image type' );
+			return new WP_Error( EEC_PREFIX . 'route_error', 'Invalid image type' );
 		}
 
 		if ( $file['size'] > self::MAX_FILE_SIZE ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'route_error', 'Invalid image size' );
+			return new WP_Error( EEC_PREFIX . 'route_error', 'Invalid image size' );
 		}
 
 		return true;

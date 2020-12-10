@@ -1,7 +1,8 @@
 <?php
 
 
-namespace Domosed\EEC\Routes;
+namespace Domosed\EEC\Modules\Vacancies;
+
 
 
 use WP_Error;
@@ -11,18 +12,20 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
-class Vacancy extends WP_REST_Controller {
+class VacanciesController extends WP_REST_Controller {
+
+	public const PER_PAGE = 10;
 
 	public function __construct() {
-		$this->namespace = EXCELLENT_EXAM_CORE_API_NAMESPACE;
-		$this->rest_base = 'vacancies';
+		$this->namespace = EEC_API_NAMESPACE;
+		$this->restBase  = 'vacancies';
 	}
 
 	/**
 	 * @return void
 	 */
 	public function register_routes(): void {
-		register_rest_route( $this->namespace, $this->rest_base, [
+		register_rest_route( $this->namespace, $this->restBase, [
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'create_item' ),
@@ -163,6 +166,27 @@ class Vacancy extends WP_REST_Controller {
 		];
 	}
 
+	public function getReadVacanciesArgs() {
+		return [
+			'perPage' => [
+				'type' => 'integer',
+				'description' => 'Items for page',
+				'default' => self::PER_PAGE,
+				'required' => false,
+				'sanitize_callback' => [ $this, 'sanitizeArgs'],
+				'validate_callback' => [ $this, 'validateArgs']
+			],
+			'page' => [
+				'type' => 'integer',
+				'description' => 'Page number',
+				'default' => 1,
+				'required' => false,
+				'sanitize_callback' => [ $this, 'sanitizeArgs'],
+				'validate_callback' => [ $this, 'validateArgs']
+			],
+		];
+	}
+
 	/**
 	 * @param WP_REST_Request $request
 	 *
@@ -293,7 +317,7 @@ class Vacancy extends WP_REST_Controller {
 			case 'metro':
 				return empty( absint( $value ) ) ? true : $this->isValidTermId( $value, $param );
 			case 'selectedProfileId':
-				return empty( absint( $value ) ) ? true : ( get_post_type( $value ) === EXCELLENT_EXAM_CORE_PREFIX . 'profile' );
+				return empty( absint( $value ) ) ? true : ( get_post_type( $value ) === EEC_PREFIX . 'profile' );
 			default:
 				return true;
 		}
@@ -309,7 +333,7 @@ class Vacancy extends WP_REST_Controller {
 		return in_array( absint( $value ), get_terms( [
 			'fields'     => 'ids',
 			'hide_empty' => false,
-			'taxonomy'   => EXCELLENT_EXAM_CORE_PREFIX . $param
+			'taxonomy'   => EEC_PREFIX . $param
 		] ), true );
 	}
 
@@ -320,7 +344,7 @@ class Vacancy extends WP_REST_Controller {
 	 */
 	public function get_items( $request ) {
 		$args = [
-			'post_type'   => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'post_type'   => EEC_PREFIX . 'vacancy',
 			'post_status' => 'any',
 			'fields'      => 'ids'
 		];

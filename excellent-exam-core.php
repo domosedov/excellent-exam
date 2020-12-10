@@ -1,12 +1,6 @@
 <?php
 
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
  *
  * @link              https://domosedov.info
  * @since             1.0.0
@@ -22,63 +16,43 @@
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       excellent-exam-core
- * Domain Path:       /languages
  */
 
-// If this file is called directly, abort.
+use Domosed\EEC\App;
+use Domosed\EEC\AppActivator;
+use Domosed\EEC\AppDeactivator;
+use Domosed\EEC\AppHooks;
+use Domosed\EEC\AppLoader;
+
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define( 'EXCELLENT_EXAM_CORE_VERSION', '1.0.0' );
-define( 'EXCELLENT_EXAM_CORE_PREFIX', 'eec_');
-define( 'EXCELLENT_EXAM_CORE_API_NAMESPACE', 'eec/v1');
+require_once __DIR__ . '/vendor/autoload.php';
 
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-excellent-exam-core-activator.php
- */
-function activate_excellent_exam_core() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-excellent-exam-core-activator.php';
-	Excellent_Exam_Core_Activator::activate();
+define( 'EEC_VERSION', '1.0.0' );
+define( 'EEC_PREFIX', 'eec_');
+define( 'EEC_API_NAMESPACE', 'eec/v1');
+
+
+function activate() {
+	AppActivator::activate();
 }
 
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-excellent-exam-core-deactivator.php
- */
-function deactivate_excellent_exam_core() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-excellent-exam-core-deactivator.php';
-	Excellent_Exam_Core_Deactivator::deactivate();
+function deactivate() {
+	AppDeactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_excellent_exam_core' );
-register_deactivation_hook( __FILE__, 'deactivate_excellent_exam_core' );
+register_activation_hook( __FILE__, 'activate' );
+register_deactivation_hook( __FILE__, 'deactivate' );
 
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-excellent-exam-core.php';
+function bootstrap() {
 
-/**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since    1.0.0
- */
-function run_excellent_exam_core() {
-
-	$plugin = new Excellent_Exam_Core();
+	$loader = new AppLoader();
+	$hooks = new AppHooks();
+	$plugin = new App($loader, $hooks);
 	$plugin->run();
 
 }
-run_excellent_exam_core();
+
+bootstrap();

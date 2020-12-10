@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Domosed\EEC\Routes;
+namespace Domosed\EEC\Modules\Profiles;
 
 
 use WP_Error;
@@ -10,25 +10,35 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
-class Profile extends WP_REST_Controller {
+class ProfilesController extends WP_REST_Controller {
 	public const ACCEPTED_FILE_TYPES = [ 'image/jpeg', 'image/png', 'image/gif' ];
 	public const MAX_FILE_SIZE = 2097152; // 2 MB
+	public const DEFAULT_PER_PAGE = 10;
+	private $profilesService;
 
-	public function __construct() {
-		$this->namespace = EXCELLENT_EXAM_CORE_API_NAMESPACE;
-		$this->rest_base = 'profiles';
+
+	public function __construct( $profilesService ) {
+		$this->profilesService = $profilesService;
+		$this->namespace       = EEC_API_NAMESPACE;
+		$this->restBase        = 'profiles';
 	}
 
 	/**
 	 * @return void
 	 */
 	public function register_routes(): void {
-		register_rest_route( $this->namespace, $this->rest_base, [
+		register_rest_route( $this->namespace, $this->restBase, [
 			[
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'create_item' ),
 				'permission_callback' => array( $this, 'create_item_permissions_check' ),
 				'args'                => $this->getCreateProfileArgs()
+			],
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this->profilesService, 'getItems' ],
+				'permission_callback' => [ $this->profilesService, 'getItemsPermissionsCheck' ],
+				'args'                => $this->getReadProfilesArgs()
 			]
 		] );
 	}
@@ -188,6 +198,67 @@ class Profile extends WP_REST_Controller {
 				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
 				'validate_callback' => [ $this, 'validateArgs' ]
 			],
+		];
+	}
+
+	public function getReadProfilesArgs(): array {
+		return [
+			'perPage' => [
+				'type'              => 'integer',
+				'description'       => 'Items for page',
+				'default'           => self::DEFAULT_PER_PAGE,
+				'required'          => false,
+				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
+				'validate_callback' => [ $this, 'validateArgs' ]
+			],
+			'page'    => [
+				'type'              => 'integer',
+				'description'       => 'Page number',
+				'default'           => 1,
+				'required'          => false,
+				'sanitize_callback' => [ $this, 'sanitizeArgs' ],
+				'validate_callback' => [ $this, 'validateArgs' ]
+			],
+			'filter'  => [
+				'type'       => 'object',
+				'properties' => [
+					'subject' => [
+						'description' => 'Предмет репетитора',
+						'type'        => 'integer',
+						'default'     => 0
+					],
+					'gender'  => [
+						'description' => 'Пол репетитора',
+						'type'        => 'integer',
+						'default'     => 0
+					],
+					'place'   => [
+						'description' => 'Место занятий',
+						'type'        => 'integer',
+						'default'     => 0
+					],
+					'city'    => [
+						'description' => 'Город',
+						'type'        => 'integer',
+						'default'     => 0
+					],
+					'metro'   => [
+						'description' => 'Метро',
+						'type'        => 'integer',
+						'default'     => 0
+					],
+					'rate'    => [
+						'description' => 'Цена',
+						'type'        => 'integer',
+						'default'     => 0
+					],
+					'student' => [
+						'description' => 'Категория ученика',
+						'type'        => 'integer',
+						'default'     => 0
+					]
+				]
+			]
 		];
 	}
 
@@ -353,7 +424,7 @@ class Profile extends WP_REST_Controller {
 		return in_array( absint( $value ), get_terms( [
 			'fields'     => 'ids',
 			'hide_empty' => false,
-			'taxonomy'   => EXCELLENT_EXAM_CORE_PREFIX . $param
+			'taxonomy'   => EEC_PREFIX . $param
 		] ), true );
 	}
 
@@ -365,7 +436,7 @@ class Profile extends WP_REST_Controller {
 		$termIds = get_terms( [
 			'fields'     => 'ids',
 			'hide_empty' => false,
-			'taxonomy'   => EXCELLENT_EXAM_CORE_PREFIX . $param
+			'taxonomy'   => EEC_PREFIX . $param
 		] );
 
 		foreach ( $values as $value ) {
@@ -376,4 +447,13 @@ class Profile extends WP_REST_Controller {
 
 		return true;
 	}
+
+	public function getItemsPermissionsCheck( $request ) {
+		return true;
+	}
+
+	public function getItems( $request ) {
+		return rest_ensure_response( [ 'message' => 'success' ] );
+	}
+
 }

@@ -34,7 +34,7 @@ function handleUploadImageFile( $uploadedFile, $relationshipId = 0, $wpError = f
 
 	if ( isset( $file['error'] ) ) {
 		if ( $wpError ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось обработать загрузку изображения.', $file['error'] );
+			return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось обработать загрузку изображения.', $file['error'] );
 		}
 
 		return false;
@@ -86,7 +86,7 @@ function handleUploadImageFile( $uploadedFile, $relationshipId = 0, $wpError = f
 function createProfile( $userId, $metaArgs, $wpError = false ) {
 	if ( ! userIsExists( $userId ) ) {
 		if ( $wpError ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Неверный ID пользователя' );
+			return new WP_Error( EEC_PREFIX . 'functions_error', 'Неверный ID пользователя' );
 		}
 
 		return false;
@@ -157,7 +157,7 @@ function createProfile( $userId, $metaArgs, $wpError = false ) {
 	 */
 	if ( ! empty( $errors ) ) {
 		if ( $wpError ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Отсутсвуют следующие обязательные поля', $errors );
+			return new WP_Error( EEC_PREFIX . 'functions_error', 'Отсутсвуют следующие обязательные поля', $errors );
 		}
 
 		return false;
@@ -166,7 +166,7 @@ function createProfile( $userId, $metaArgs, $wpError = false ) {
 
 	$defaultArgs = [
 		'post_title'  => $args['firstName'] . ' ' . $args['lastName'],
-		'post_type'   => EXCELLENT_EXAM_CORE_PREFIX . 'profile',
+		'post_type'   => EEC_PREFIX . 'profile',
 		'post_status' => 'pending',
 	];
 
@@ -199,10 +199,10 @@ if ( ! function_exists( 'setProfileAvatar' ) ) {
 	 * @return bool|WP_Error Возвращет true в случае успеха или WP_Error при неудаче
 	 */
 	function setProfileAvatar( $profileId, $imageAttachmentId, $wpError = false ) {
-		if ( entityIsExists( $profileId, EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) && entityIsExists( $imageAttachmentId, 'attachment' ) ) {
+		if ( entityIsExists( $profileId, EEC_PREFIX . 'profile' ) && entityIsExists( $imageAttachmentId, 'attachment' ) ) {
 			if ( ! update_metadata( 'post', absint( $profileId ), 'avatarAttachmentId', absint( $imageAttachmentId ) ) ) {
 				if ( $wpError ) {
-					return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось установить avatarAttachmentId', [
+					return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось установить avatarAttachmentId', [
 						'profileId' => $profileId,
 						'metaKey'   => 'avatarAttachmentId',
 						'metaValue' => $imageAttachmentId
@@ -216,7 +216,7 @@ if ( ! function_exists( 'setProfileAvatar' ) ) {
 		}
 
 		if ( $wpError ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Профиль или изображение не существует', [
+			return new WP_Error( EEC_PREFIX . 'functions_error', 'Профиль или изображение не существует', [
 				'profileId'         => $profileId,
 				'imageAttachmentId' => $imageAttachmentId
 			] );
@@ -225,7 +225,7 @@ if ( ! function_exists( 'setProfileAvatar' ) ) {
 		return false;
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию setProfileAvatar' );
+	return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось определить функцию setProfileAvatar' );
 }
 
 if ( ! function_exists( 'setProfileDocuments' ) ) {
@@ -239,10 +239,10 @@ if ( ! function_exists( 'setProfileDocuments' ) ) {
 	 * @return bool|WP_Error Возвращет true в случае успеха или WP_Error при неудаче
 	 */
 	function setProfileDocuments( int $profileId, array $imageAttachmentIds, $wpError = false ) {
-		if ( entityIsExists( $profileId, EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) && entitiesIsExists( $imageAttachmentIds, 'attachment' ) ) {
+		if ( entityIsExists( $profileId, EEC_PREFIX . 'profile' ) && entitiesIsExists( $imageAttachmentIds, 'attachment' ) ) {
 			if ( ! update_metadata( 'post', absint( $profileId ), 'documentAttachmentIds', $imageAttachmentIds ) ) {
 				if ( $wpError ) {
-					return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось установить documentAttachmentIds', [
+					return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось установить documentAttachmentIds', [
 						'profileId' => $profileId,
 						'metaKey'   => 'documentAttachmentIds',
 						'metaValue' => $imageAttachmentIds
@@ -256,7 +256,7 @@ if ( ! function_exists( 'setProfileDocuments' ) ) {
 		}
 
 		if ( $wpError ) {
-			return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Профиль или изображение не существует', [
+			return new WP_Error( EEC_PREFIX . 'functions_error', 'Профиль или изображение не существует', [
 				'profileId'             => $profileId,
 				'documentAttachmentIds' => $imageAttachmentIds
 			] );
@@ -265,7 +265,7 @@ if ( ! function_exists( 'setProfileDocuments' ) ) {
 		return false;
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию setProfileAvatar' );
+	return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось определить функцию setProfileAvatar' );
 }
 
 if ( ! function_exists( 'entityIsExists' ) ) {
@@ -298,7 +298,7 @@ if ( ! function_exists( 'entityIsExists' ) ) {
 		return false;
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию entityIsExists' );
+	return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось определить функцию entityIsExists' );
 }
 
 if ( ! function_exists( 'entitiesIsExists' ) ) {
@@ -336,7 +336,7 @@ if ( ! function_exists( 'entitiesIsExists' ) ) {
 		return true;
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию entitiesIsExists' );
+	return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось определить функцию entitiesIsExists' );
 }
 
 if ( ! function_exists( 'normalizeMultipleFileUpload' ) ) {
@@ -424,7 +424,7 @@ if ( ! function_exists( 'createVacancy' ) ) {
 		 */
 		if ( ! empty( $errors ) ) {
 			if ( $wpError ) {
-				return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Отсутсвуют следующие обязательные поля', $errors );
+				return new WP_Error( EEC_PREFIX . 'functions_error', 'Отсутсвуют следующие обязательные поля', $errors );
 			}
 
 			return false;
@@ -433,7 +433,7 @@ if ( ! function_exists( 'createVacancy' ) ) {
 
 		$defaultArgs = [
 			'post_title'  => get_term( $args['subjectTermId'] )->name . ': ' . $args['firstName'] . ' ' . $args['lastName'],
-			'post_type'   => EXCELLENT_EXAM_CORE_PREFIX . 'vacancy',
+			'post_type'   => EEC_PREFIX . 'vacancy',
 			'post_status' => 'pending',
 		];
 
@@ -476,7 +476,7 @@ if ( ! function_exists( 'getUserProfileId' ) ) {
 		return 0;
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию getUserProfileId' );
+	return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось определить функцию getUserProfileId' );
 }
 
 if ( ! function_exists( 'getImageUrls' ) ) {
@@ -501,7 +501,7 @@ if ( ! function_exists( 'getImageUrls' ) ) {
 		return [];
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию getImageUrls' );
+	return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось определить функцию getImageUrls' );
 }
 
 function normalizeDate( $date ) {
@@ -512,7 +512,7 @@ if ( ! function_exists( 'getProfile' ) ) {
 	function getProfile( $profileId ) {
 		global $wpdb;
 		$output = [];
-		if ( entityIsExists( $profileId, EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) ) {
+		if ( entityIsExists( $profileId, EEC_PREFIX . 'profile' ) ) {
 
 
 			$profile = get_post( $profileId );
@@ -571,7 +571,7 @@ if ( ! function_exists( 'getProfile' ) ) {
 		return $output;
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию getProfile' );
+	return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось определить функцию getProfile' );
 }
 
 if ( ! function_exists( 'getVacancy' ) ) {
@@ -579,7 +579,7 @@ if ( ! function_exists( 'getVacancy' ) ) {
 		global $wpdb;
 		$output = [];
 
-		if ( entityIsExists( $vacancyId, EXCELLENT_EXAM_CORE_PREFIX . 'vacancy' ) ) {
+		if ( entityIsExists( $vacancyId, EEC_PREFIX . 'vacancy' ) ) {
 
 
 			$vacancy = get_post( $vacancyId );
@@ -629,7 +629,7 @@ if ( ! function_exists( 'getVacancy' ) ) {
 		return $output;
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию getVacancy' );
+	return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось определить функцию getVacancy' );
 }
 
 /**
@@ -691,7 +691,7 @@ if ( ! function_exists( 'getProfileVacanciesBy' ) ) {
 	function getProfileVacanciesBy( $field, $profileId ) {
 		$acceptedFields = [ 'selectedProfileId', 'executorProfileId' ];
 
-		if ( in_array( $field, $acceptedFields ) && entityIsExists( $profileId, EXCELLENT_EXAM_CORE_PREFIX . 'profile' ) ) {
+		if ( in_array( $field, $acceptedFields ) && entityIsExists( $profileId, EEC_PREFIX . 'profile' ) ) {
 			global $wpdb;
 
 			$sql = <<<SQL
@@ -718,6 +718,6 @@ if ( ! function_exists( 'getProfileVacanciesBy' ) ) {
 		return [];
 	}
 } else {
-	return new WP_Error( EXCELLENT_EXAM_CORE_PREFIX . 'functions_error', 'Не удалось определить функцию getProfileVacanciesBy' );
+	return new WP_Error( EEC_PREFIX . 'functions_error', 'Не удалось определить функцию getProfileVacanciesBy' );
 }
 
