@@ -31,26 +31,20 @@ if ( ! defined( 'WPINC' ) ) {
 require_once __DIR__ . '/vendor/autoload.php';
 
 define( 'EEC_VERSION', '1.0.0' );
-define( 'EEC_PREFIX', 'eec_');
-define( 'EEC_API_NAMESPACE', 'eec/v1');
-
-
-function activate() {
-	AppActivator::activate();
-}
-
-function deactivate() {
-	AppDeactivator::deactivate();
-}
-
-register_activation_hook( __FILE__, 'activate' );
-register_deactivation_hook( __FILE__, 'deactivate' );
+define( 'EEC_PREFIX', 'eec_' );
+define( 'EEC_API_NAMESPACE', 'eec/v1' );
+define( 'EEC_DIR_PATH', plugin_dir_path( __FILE__ ) );
+define( 'EEC_DIR_URL', plugin_dir_url( __FILE__ ) );
 
 function bootstrap() {
 
 	$loader = new AppLoader();
-	$hooks = new AppHooks();
-	$plugin = new App($loader, $hooks);
+	$hooks  = new AppHooks();
+	$plugin = new App( $loader, $hooks );
+
+	register_activation_hook( __FILE__, [ $plugin, 'createTables' ] );
+	register_deactivation_hook( __FILE__, [ $plugin, 'dropTables' ] );
+
 	$plugin->run();
 
 }
