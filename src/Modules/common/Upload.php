@@ -4,7 +4,6 @@
 namespace Domosed\EEC\Modules\common;
 
 
-
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -46,6 +45,26 @@ class Upload {
 				]
 			]
 		] );
+
+		register_rest_route( $this->namespace, $this->rest_base, [
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'myUpload' ),
+				'permission_callback' => array( $this, 'myUploadPermission' )
+			]
+		] );
+	}
+
+	function myUpload( $request ) {
+		$r = $request->get_file_params();
+
+
+
+		return rest_ensure_response(['sdf' => 'sdf']);
+	}
+
+	function myUploadPermission( $request ) {
+		return true;
 	}
 
 	/**

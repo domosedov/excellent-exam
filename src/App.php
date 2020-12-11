@@ -62,8 +62,52 @@ class App {
 
 		$subjectsTableName = $prefix . 'eec_subjects';
 
-		$subjectsTableQuery = "
+		$subjectsQuery = "
 			CREATE TABLE {$subjectsTableName} (
+				id bigint(20) unsigned NOT NULL auto_increment,
+				name varchar(255) NOT NULL default '',				
+				PRIMARY KEY (id),
+				KEY name (name)
+			) $charsetCollate;
+		";
+
+		$studentsTableName = $prefix . 'eec_students';
+
+		$studentsQuery = "
+			CREATE TABLE {$studentsTableName} (
+				id bigint(20) unsigned NOT NULL auto_increment,
+				name varchar(255) NOT NULL default '',				
+				PRIMARY KEY (id),
+				KEY name (name)
+			) $charsetCollate;
+		";
+
+		$statusesTableName = $prefix . 'eec_statuses';
+
+		$statusesQuery = "
+			CREATE TABLE {$statusesTableName} (
+				id bigint(20) unsigned NOT NULL auto_increment,
+				name varchar(255) NOT NULL default '',				
+				PRIMARY KEY (id),
+				KEY name (name)
+			) $charsetCollate;
+		";
+
+		$placesTableName = $prefix . 'eec_places';
+
+		$placesQuery = "
+			CREATE TABLE {$placesTableName} (
+				id bigint(20) unsigned NOT NULL auto_increment,
+				name varchar(255) NOT NULL default '',				
+				PRIMARY KEY (id),
+				KEY name (name)
+			) $charsetCollate;
+		";
+
+		$marksTableName = $prefix . 'eec_marks';
+
+		$marksQuery = "
+			CREATE TABLE {$marksTableName} (
 				id bigint(20) unsigned NOT NULL auto_increment,
 				name varchar(255) NOT NULL default '',				
 				PRIMARY KEY (id),
@@ -105,21 +149,61 @@ class App {
 
 		$profilesSubjectsTableName = $prefix . 'eec_profiles_subjects';
 
-		$profilesSubjectsTableQuery = "
+		$profilesSubjectsQuery = "
 			CREATE TABLE {$profilesSubjectsTableName} (
 				profile_id bigint(20) unsigned NOT NULL,
 				subject_id bigint(20) unsigned NOT NULL,
-				FOREIGN KEY (profile_id) REFERENCES {$profilesTableName}(id),
+				FOREIGN KEY (profile_id) REFERENCES {$profilesTableName}(id) ON DELETE CASCADE,
 				FOREIGN KEY (subject_id) REFERENCES {$subjectsTableName}(id)
+			) $charsetCollate;
+		";
+
+		$profilesPlacesTableName = $prefix . 'eec_profiles_places';
+
+		$profilesPlacesQuery = "
+			CREATE TABLE {$profilesPlacesTableName} (
+				profile_id bigint(20) unsigned NOT NULL,
+				place_id bigint(20) unsigned NOT NULL,
+				FOREIGN KEY (profile_id) REFERENCES {$profilesTableName}(id) ON DELETE CASCADE,
+				FOREIGN KEY (place_id) REFERENCES {$placesTableName}(id)
+			) $charsetCollate;
+		";
+
+		$profilesStudentsTableName = $prefix . 'eec_profiles_students';
+
+		$profilesStudentsQuery = "
+			CREATE TABLE {$profilesStudentsTableName} (
+				profile_id bigint(20) unsigned NOT NULL,
+				student_id bigint(20) unsigned NOT NULL,
+				FOREIGN KEY (profile_id) REFERENCES {$profilesTableName}(id) ON DELETE CASCADE,
+				FOREIGN KEY (student_id) REFERENCES {$studentsTableName}(id)
+			) $charsetCollate;
+		";
+
+		$profilesMarksTableName = $prefix . 'eec_profiles_marks';
+
+		$profilesMarksQuery = "
+			CREATE TABLE {$profilesMarksTableName} (
+				profile_id bigint(20) unsigned NOT NULL,
+				mark_id bigint(20) unsigned NOT NULL,
+				FOREIGN KEY (profile_id) REFERENCES {$profilesTableName}(id) ON DELETE CASCADE,
+				FOREIGN KEY (mark_id) REFERENCES {$marksTableName}(id)
 			) $charsetCollate;
 		";
 
 		dbDelta( [
 			$citiesQuery,
 			$metrosQuery,
-			$subjectsTableQuery,
+			$subjectsQuery,
+			$studentsQuery,
+			$statusesQuery,
+			$placesQuery,
+			$marksQuery,
 			$profilesQuery,
-			$profilesSubjectsTableQuery
+			$profilesSubjectsQuery,
+			$profilesPlacesQuery,
+			$profilesStudentsQuery,
+			$profilesMarksQuery
 		] );
 
 		$this->insertCities( $citiesTableName );
@@ -171,13 +255,27 @@ class App {
 		$citiesTableName           = $prefix . 'eec_cities';
 		$metrosTableName           = $prefix . 'eec_metros';
 		$subjectsTableName         = $prefix . 'eec_subjects';
+		$studentsTableName         = $prefix . 'eec_students';
+		$statusesTableName         = $prefix . 'eec_statuses';
+		$placesTableName           = $prefix . 'eec_places';
+		$marksTableName            = $prefix . 'eec_marks';
 		$profilesSubjectsTableName = $prefix . 'eec_profiles_subjects';
+		$profilesStudentsTableName = $prefix . 'eec_profiles_students';
+		$profilesPlacesTableName   = $prefix . 'eec_profiles_places';
+		$profilesMarksTableName    = $prefix . 'eec_profiles_marks';
 
 		$wpdb->query( "DROP TABLE $profilesSubjectsTableName;" );
+		$wpdb->query( "DROP TABLE $profilesPlacesTableName;" );
+		$wpdb->query( "DROP TABLE $profilesMarksTableName;" );
+		$wpdb->query( "DROP TABLE $profilesStudentsTableName;" );
 		$wpdb->query( "DROP TABLE $profilesTableName;" );
 		$wpdb->query( "DROP TABLE $citiesTableName;" );
 		$wpdb->query( "DROP TABLE $metrosTableName;" );
+		$wpdb->query( "DROP TABLE $statusesTableName;" );
 		$wpdb->query( "DROP TABLE $subjectsTableName;" );
+		$wpdb->query( "DROP TABLE $studentsTableName;" );
+		$wpdb->query( "DROP TABLE $placesTableName;" );
+		$wpdb->query( "DROP TABLE $marksTableName;" );
 
 	}
 
